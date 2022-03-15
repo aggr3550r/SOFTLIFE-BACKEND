@@ -1,0 +1,14 @@
+### Creates a new anticipator
+
+POST http://localhost:5000/coming-soon
+content-type : application/json
+
+{
+    "email": "hello@kippa.africa"
+}
+
+### Retrieve one anticipator
+GET http://localhost:5000/coming-soon/9
+
+### Retrieve all the anticipators
+GET http://localhost:5000/coming-soon/

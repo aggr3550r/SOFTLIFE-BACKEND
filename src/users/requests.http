@@ -1,0 +1,46 @@
+### Create a new user
+POST http://localhost:5000/auth/signup
+content-type: application/json
+
+{
+    "email": "neves@grider.com",
+    "password": "neves"
+}
+
+### Signin an existing user
+
+POST http://localhost:5000/auth/signin
+content-type: application/json
+
+{
+    "email": "neves@grider.com",
+    "password": "neves"
+}
+
+### Signout the currently signed in user
+POST http://localhost:5000/auth/signout
+
+### Find a particular user with ID
+   
+GET http://localhost:5000/auth/10
+
+### Find all users registered with a given email
+
+GET http://localhost:5000/auth?email=asdf@asdf.com
+
+
+### Delete a user with a given ID
+DELETE http://localhost:5000/auth/3
+
+
+### Update a user with a given ID
+PATCH http://localhost:5000/auth/2
+content-type: application/json
+
+{
+    "email": "victor@kippa.africa"
+}
+
+### Get the currently signed in user
+
+GET http://localhost:5000/auth/whoami
