@@ -1,14 +1,16 @@
 ### Creates a new anticipator
-
 POST http://localhost:5000/coming-soon
 content-type : application/json
 
 {
-    "email": "hello@kippa.africa"
+    "email": "victor@kippa.africa"
 }
 
 ### Retrieve one anticipator
-GET http://localhost:5000/coming-soon/9
+GET http://localhost:5000/coming-soon/2
 
 ### Retrieve all the anticipators
 GET http://localhost:5000/coming-soon/
+
+### Delete a specified anticipator from the waiting list
+DELETE http://localhost:5000/coming-soon/1
