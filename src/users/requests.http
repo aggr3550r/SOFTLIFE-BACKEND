@@ -3,8 +3,8 @@ POST http://localhost:5000/auth/signup
 content-type: application/json
 
 {
-    "email": "neves@grider.com",
-    "password": "neves"
+    "email": "victor@kippa.com",
+    "password": "killshot"
 }
 
 ### Signin an existing user
@@ -22,15 +22,15 @@ POST http://localhost:5000/auth/signout
 
 ### Find a particular user with ID
    
-GET http://localhost:5000/auth/10
+GET http://localhost:5000/auth/2
 
 ### Find all users registered with a given email
 
-GET http://localhost:5000/auth?email=asdf@asdf.com
+GET http://localhost:5000/auth?email=hello@kippa.africa
 
 
 ### Delete a user with a given ID
-DELETE http://localhost:5000/auth/3
+DELETE http://localhost:5000/auth/2
 
 
 ### Update a user with a given ID
