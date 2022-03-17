@@ -9,15 +9,23 @@ const dbConfig = {
 switch (process.env.NODE_ENV) {
     case 'development':
         Object.assign(dbConfig, {
-            type: 'sqlite',
-            database: 'db.sqlite',
+            type: 'postgres',
+            host: 'localhost',
+            database: 'postgres',
+            port: 5432,
+            username: 'postgres',
+            password: 'killshot',
             entities: ['**/*.entity.js'],
         });
         break;
     case 'test':
         Object.assign(dbConfig, {
-            type: 'sqlite',
-            database: 'test.sqlite',
+            ype: 'postgres',
+            host: 'localhost',
+            database: 'postgres',
+            port: 5432,
+            username: 'postgres',
+            password: 'killshot',
             entities: ['**/*.entity.ts'],
             migrationsRun: true
         });
