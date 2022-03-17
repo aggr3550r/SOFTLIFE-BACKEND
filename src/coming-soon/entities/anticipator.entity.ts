@@ -7,4 +7,7 @@ export class Anticipator {
 
     @Column()
     email: string;
+
+    @Column()
+    description: string;
 }
