@@ -8,11 +8,7 @@ export class User {
 
     @Column()
     email: string;
-
-    @Column()
-    description: string;
-
-
+    
     @Column()
     password: string;
 
