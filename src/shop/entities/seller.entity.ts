@@ -3,7 +3,7 @@ import { Column, Entity } from "typeorm";
 
 @Entity()
 export class Seller extends User {
-    @Column({default: false})
+    @Column({default: "false"})
     seller: boolean;
 
     @Column()
@@ -18,6 +18,6 @@ export class Seller extends User {
     @Column()
     zip: number;
     
-    @Column({default: Date.now})
-    created: Date;
+    // @Column({default: Date.now})
+    // created: Date;
 }

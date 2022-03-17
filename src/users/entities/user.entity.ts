@@ -9,11 +9,14 @@ export class User {
     @Column()
     email: string;
 
+    @Column()
+    description: string;
+
 
     @Column()
     password: string;
 
-    @Column({ default: true})
+    @Column({ default: "false"})
     admin: boolean;
 
     @AfterInsert()
