@@ -1,4 +1,4 @@
-// import { Report } from "src/reports/entities//reports.entity";
+import { Post } from "src/blog/entities/post.entity";
 import { AfterInsert, AfterUpdate, AfterRemove, Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 
 @Entity()
@@ -11,9 +11,18 @@ export class User {
     
     @Column()
     password: string;
+    
+    @Column()
+    username: string;
 
-    @Column({ default: "false"})
+    @Column({ default: false})
     admin: boolean;
+
+    @Column({ default: false})
+    seller: boolean;
+
+    @Column({ default: false})
+    creator: boolean;
 
     @AfterInsert()
     logInsert() {
@@ -30,7 +39,8 @@ export class User {
         console.log("Removed user with an ID of", this.id);
     }
 
-    
+    @OneToMany(() => Post, (post) => post.creator)
+    posts: Post[];
     // @OneToMany(() => Report, (report) => report.user)
     // reports: Report[];
 }

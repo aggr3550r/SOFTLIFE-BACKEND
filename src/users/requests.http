@@ -14,8 +14,8 @@ POST http://localhost:5000/auth/signin
 content-type: application/json
 
 {
-    "email": "victor@kippa.africa",
-    "password": "killshot"
+    "email": "piper@kippa.com",
+    "password": "piper"
 }
 
 
@@ -41,11 +41,11 @@ DELETE http://localhost:5000/auth/2
 
 
 ### Update a user with a given ID
-PATCH http://localhost:5000/auth/6
+PATCH http://localhost:5000/auth/2
 content-type: application/json
 
 {
-    "email": "mercy@kippa.africa",
+    "email": "piper@kippa.africa",
     "admin": true
 }
 
