@@ -7,10 +7,22 @@ export class UpdateUserDTO {
 
     @IsString()
     @IsOptional()
+    username: string;
+
+    @IsString()
+    @IsOptional()
     password: string;
 
     
     @IsBoolean()
     @IsOptional()
     admin: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    seller: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    creator: boolean;
 }
