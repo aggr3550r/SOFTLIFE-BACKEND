@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { BlogModule } from './blog/blog.module';
+import { PostsModule } from './blog/posts.module';
 import { ShopModule } from './shop/shop.module';
 import { APP_PIPE } from '@nestjs/core';
 import { User } from './users/entities/user.entity';
@@ -19,7 +20,7 @@ const cookieSession = require('cookie-session');
     isGlobal : true,
     envFilePath: `.env.${process.env.NODE_ENV}`
   }),
-  UsersModule, BlogModule, ShopModule,
+  UsersModule, PostsModule, BlogModule, ShopModule,
   TypeOrmModule.forRoot(),
   ComingSoonModule],
   controllers: [AppController],

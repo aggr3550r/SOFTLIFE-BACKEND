@@ -1,0 +1,10 @@
+### Create a new blogpost
+
+POST http://localhost:5000/blogposts
+content-type: application/json
+
+{
+    "title": "My First Blog Post",
+    "description": "A test blogpost",
+    "content": "Hi there! More content coming right up..."
+}

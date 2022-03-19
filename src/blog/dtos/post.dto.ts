@@ -1,4 +1,5 @@
 import { Transform, Expose } from "class-transformer";
+import { User } from "src/users/entities/user.entity";
 
 
 export class PostDTO {
@@ -12,16 +13,19 @@ export class PostDTO {
     description: string;
 
     @Expose()
+    content: string;
+
+    @Expose()
     createdOn: Date;
 
     @Expose()
     approved: boolean;
 
-    @Transform(({obj}) => obj.user.id)
+    @Transform(({obj}) => obj.creator.id)
     @Expose()
     userID: number;
 
-    @Transform(({obj}) => obj.user.username)
+    @Transform(({obj}) => obj.creator.username)
     @Expose()
     username: string;
 }
