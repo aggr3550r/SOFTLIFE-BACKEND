@@ -24,6 +24,9 @@ export class User {
     @Column({ default: false})
     creator: boolean;
 
+    @Column({default: true})
+    active: boolean;
+
     @AfterInsert()
     logInsert() {
         console.log("Inserted user with an ID of ", this.id);
@@ -41,6 +44,4 @@ export class User {
 
     @OneToMany(() => Post, (post) => post.creator)
     posts: Post[];
-    // @OneToMany(() => Report, (report) => report.user)
-    // reports: Report[];
 }

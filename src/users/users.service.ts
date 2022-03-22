@@ -23,6 +23,15 @@ export class UsersService {
         return this.repo.find({email});
     }
 
+    async findAllEmails() {
+        const users = await this.repo.find();
+        const emails = [];
+        users.forEach(e => {
+            emails.push(e.email);
+        });
+        return emails;
+    }
+
     findOne(id: number) {
         if(!id){
             return null;

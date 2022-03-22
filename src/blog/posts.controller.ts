@@ -1,9 +1,10 @@
-import { Body, Controller, Patch, Post, UseGuards, Param, Get } from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards, Param, Get, NotFoundException } from '@nestjs/common';
 import { AdminGuard } from 'src/guards/admin.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 import { User } from 'src/users/entities/user.entity';
+import { threadId } from 'worker_threads';
 import { ApprovePostDTO } from './dtos/approve-post.dto';
 import { CreatePostDTO } from './dtos/create-post.dto';
 import { PostDTO } from './dtos/post.dto';
@@ -21,21 +22,35 @@ export class PostsController {
         return this.postsService.create(body, user);
     }
 
-    @Patch('/:id')
+    @Patch('approve/:id')
     @UseGuards(AdminGuard)
     approvePost(@Param('id') id: string, @Body() body: ApprovePostDTO) {
         return this.postsService.changeApprovalStatus(id,body.approved);
     }
 
-    @Get('/:id')
-    getPost(@Param('id') id: string) {
-        return this.postsService.findOne(parseInt(id));
-    } 
+    @Get('passers') 
+    async getAllApprovedPosts() {
+        const posts = await this.getAllPosts();
+        const approvedPosts = [];
+        posts.forEach((post) => {
+            if(post.approved) approvedPosts.push(post)
+        })
+        return approvedPosts; 
+    }
 
+
+    @Get('/:id')
+    async getPost(@Param('id') id: string) {
+        const post = await this.postsService.findOne(parseInt(id));
+        if(!post) throw new NotFoundException("That blogpost does not exist!");
+        return post;
+    } 
+ 
     @Get()
     getAllPosts() {
         return this.postsService.findAll();
     }
+
     
     @Patch('/:id')
     updatePost(@Param('id') id: string, @Body() body: UpdatePostDTO) {

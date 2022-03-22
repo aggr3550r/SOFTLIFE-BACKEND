@@ -9,6 +9,7 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from './entities/user.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { SignInDTO } from './dtos/signin.dto';
+ 
 
 
 @Controller('auth')
@@ -42,6 +43,11 @@ export class UsersController {
         session.userID = null;
     }
 
+    @Get('/emails')
+     getAllRegisteredEmails() {
+         return this.usersService.findAllEmails();
+     }
+
      @Get('/:id')
      findUser(@Param('id') id: string){
          return this.usersService.findOne(parseInt(id));
@@ -51,6 +57,7 @@ export class UsersController {
      findAllUsers(@Query('email') email: string) {
          return this.usersService.find(email);
      }
+
 
      @Delete('/:id')
      removeUser(@Param('id') id: string){

@@ -6,6 +6,7 @@ import { CreatePostDTO } from './dtos/create-post.dto';
 import { UpdatePostDTO } from './dtos/update-post.dto';
 import { Post } from './entities/post.entity';
 
+
 @Injectable()
 export class PostsService {
     constructor(@InjectRepository(Post) private repo: Repository<Post>){}
@@ -25,9 +26,18 @@ export class PostsService {
     }
 
     async findAll() {
-        const posts = this.repo.find();
+        const posts = await this.repo.find();
         return posts;
     }
+
+    
+    // propertyEvaluator(objects: Post[], property ) {
+    //     const passers = [];
+    //     objects.forEach((object) => {
+    //         if(object[property]) passers.push(object)
+    //     })
+    //     return passers;
+    // }
 
 
     async update(id: number, body: UpdatePostDTO){

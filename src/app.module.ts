@@ -8,9 +8,10 @@ import { BlogModule } from './blog/blog.module';
 import { PostsModule } from './blog/posts.module';
 import { ShopModule } from './shop/shop.module';
 import { APP_PIPE } from '@nestjs/core';
-import { User } from './users/entities/user.entity';
 import { ComingSoonModule } from './coming-soon/coming-soon.module';
-import { Anticipator } from './coming-soon/entities/anticipator.entity';
+import { MailController } from './mail.controller';
+import { SendgridService } from './sendgrid.service';
+import { ContactModule } from './contact/contact.module';
 const cookieSession = require('cookie-session');
 
 
@@ -22,15 +23,16 @@ const cookieSession = require('cookie-session');
   }),
   UsersModule, PostsModule, BlogModule, ShopModule,
   TypeOrmModule.forRoot(),
-  ComingSoonModule],
-  controllers: [AppController],
+  ComingSoonModule,
+  ContactModule],
+  controllers: [AppController, MailController],
   providers: [AppService,
   {
     provide: APP_PIPE,
     useValue: new ValidationPipe({
       whitelist: true
     }),
-  }]
+  }, SendgridService]
 })
 export class AppModule {
   constructor(private configService: ConfigService){}
