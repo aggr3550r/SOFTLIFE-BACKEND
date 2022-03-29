@@ -10,22 +10,22 @@ switch (process.env.NODE_ENV) {
     case 'development':
         Object.assign(dbConfig, {
             type: 'postgres',
-            host: 'localhost',
+            host:  process.env.DB_HOST,
             database: 'postgres',
-            port: 5432,
-            username: 'postgres',
-            password: 'killshot',
+            port: DB_PORT,
+            username: DB_USERNAME,
+            password: DB_PASSWORD,
             entities: ['**/*.entity.js'],
         });
         break;
     case 'test':
         Object.assign(dbConfig, {
-            ype: 'postgres',
-            host: 'localhost',
+            type: 'postgres',
+            host:  process.env.DB_HOST,
             database: 'postgres',
-            port: 5432,
-            username: 'postgres',
-            password: 'killshot',
+            port: DB_PORT,
+            username: DB_USERNAME,
+            password: DB_PASSWORD,
             entities: ['**/*.entity.ts'],
             migrationsRun: true
         });
