@@ -1,4 +1,4 @@
-import { Post } from "src/blog/entities/post.entity";
+import { Post } from "src/modules/blog/entities/post.entity";
 import { AfterInsert, AfterUpdate, AfterRemove, Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 
 @Entity()

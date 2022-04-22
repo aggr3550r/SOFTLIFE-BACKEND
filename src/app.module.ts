@@ -1,17 +1,21 @@
 import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
+import { TerminusModule } from '@nestjs/terminus';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { BlogModule } from './blog/blog.module';
-import { PostsModule } from './blog/posts.module';
-import { ShopModule } from './shop/shop.module';
+import { UsersModule } from './modules/users/users.module';
+import { BlogModule } from './modules/blog/blog.module';
+import { PostsModule } from './modules/blog/posts.module';
+import { ShopModule } from './modules/shop/shop.module';
 import { APP_PIPE } from '@nestjs/core';
-import { ComingSoonModule } from './coming-soon/coming-soon.module';
+import { ComingSoonModule } from './modules/coming-soon/coming-soon.module';
 import { MailController } from './mail.controller';
 import { SendgridService } from './sendgrid.service';
-import { ContactModule } from './contact/contact.module';
+import { ContactModule } from './modules/contact/contact.module';
+import { HealthController } from './health/health.controller';
 const cookieSession = require('cookie-session');
 
 
@@ -22,10 +26,12 @@ const cookieSession = require('cookie-session');
     envFilePath: `.env.${process.env.NODE_ENV}`
   }),
   UsersModule, PostsModule, BlogModule, ShopModule,
+  HttpModule,
   TypeOrmModule.forRoot(),
+  ScheduleModule.forRoot(),
   ComingSoonModule,
-  ContactModule],
-  controllers: [AppController, MailController],
+  ContactModule, TerminusModule],
+  controllers: [AppController, MailController, HealthController],
   providers: [AppService,
   {
     provide: APP_PIPE,
@@ -38,7 +44,9 @@ export class AppModule {
   constructor(private configService: ConfigService){}
   configure(consumer: MiddlewareConsumer){
     consumer.apply(cookieSession({
-      keys: [this.configService.get('COOKIE_KEY')]
+      // keys: [process.env.COOKIE_KEY]
+      keys: this.configService.get<string>('COOKIE_KEY')
     })).forRoutes('*');
   }
 }
+//this.configService.get('COOKIE_KEY')

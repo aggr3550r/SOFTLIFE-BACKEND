@@ -1,5 +1,6 @@
 const dbConfig = {
    synchronize: false,
+   retryAttempts: 3,
    migrations: ['migrations/*.js'],
    cli: {
        migrationsDir: 'migrations',
@@ -12,9 +13,9 @@ switch (process.env.NODE_ENV) {
             type: 'postgres',
             host:  process.env.DB_HOST,
             database: 'postgres',
-            port: DB_PORT,
-            username: DB_USERNAME,
-            password: DB_PASSWORD,
+            port: process.env.DB_PORT,
+            username: process.env.DATABASE_USERNAME,
+            password: process.env.DB_PASSWORD,
             entities: ['**/*.entity.js'],
         });
         break;
@@ -23,9 +24,9 @@ switch (process.env.NODE_ENV) {
             type: 'postgres',
             host:  process.env.DB_HOST,
             database: 'postgres',
-            port: DB_PORT,
-            username: DB_USERNAME,
-            password: DB_PASSWORD,
+            port: process.env.DB_PORT,
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
             entities: ['**/*.entity.ts'],
             migrationsRun: true
         });
