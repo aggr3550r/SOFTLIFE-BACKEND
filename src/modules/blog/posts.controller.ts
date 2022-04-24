@@ -2,7 +2,7 @@ import { Body, Controller, Patch, Post, UseGuards, Param, Get, NotFoundException
 import { AdminGuard } from 'src/guards/admin.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { CurrentUser } from 'src/modules/users/decorators/current-user.decorator';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { User } from 'src/modules/users/entities/user.entity';
 import { threadId } from 'worker_threads';
 import { ApprovePostDTO } from './dtos/approve-post.dto';

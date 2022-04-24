@@ -5,7 +5,7 @@ import { UpdateUserDTO } from './dtos/update-user.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDTO } from './dtos/user.dto';
 import { AuthService } from './auth/auth.service';
-import { CurrentUser } from './decorators/current-user.decorator';
+import { CurrentUser } from '../../decorators/current-user.decorator';
 import { User } from './entities/user.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { SignInDTO } from './dtos/signin.dto';

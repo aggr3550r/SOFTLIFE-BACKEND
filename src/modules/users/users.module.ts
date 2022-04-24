@@ -4,7 +4,7 @@ import { AuthService } from './auth/auth.service';
 import { User } from './entities/user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { CurrentUserMiddleware } from './middlewares/current-user.middleware';
+import { CurrentUserMiddleware } from '../../middlewares/current-user.middleware';
 
 
 
