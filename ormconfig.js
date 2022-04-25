@@ -1,5 +1,5 @@
 const dbConfig = {
-   synchronize: false,
+   synchronize: true,
    retryAttempts: 3,
    migrations: ['migrations/*.js'],
    cli: {
@@ -12,7 +12,7 @@ switch (process.env.NODE_ENV) {
         Object.assign(dbConfig, {
             type: 'postgres',
             host:  process.env.DB_HOST,
-            database: 'postgres',
+            database: 'softlifedb',
             port: process.env.DB_PORT,
             username: process.env.DATABASE_USERNAME,
             password: process.env.DB_PASSWORD,
@@ -23,11 +23,11 @@ switch (process.env.NODE_ENV) {
         Object.assign(dbConfig, {
             type: 'postgres',
             host:  process.env.DB_HOST,
-            database: 'postgres',
+            database: 'softlifedb',
             port: process.env.DB_PORT,
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
-            entities: ['**/*.entity.ts'],
+            entities: ['**/*.entity.js'],
             migrationsRun: true
         });
         break;

@@ -1,7 +1,7 @@
-import { IsNotEmpty, IsOptional, IsString, Max } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 
-export class CreatePostDTO {
+export class CreateBlogPostDTO {
     @IsString()
     @IsNotEmpty()
     title: string;

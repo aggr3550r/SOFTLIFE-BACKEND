@@ -1,6 +1,6 @@
 import { IsBoolean } from 'class-validator';
 
-export class ApprovePostDTO {
+export class ApproveBlogPostDTO {
     @IsBoolean()
     approved: boolean;
 }

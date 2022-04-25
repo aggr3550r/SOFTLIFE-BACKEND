@@ -2,7 +2,7 @@ import { User } from "src/modules/users/entities/user.entity";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from "typeorm";
 
 @Entity()
-export class Post {
+export class BlogPost {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -30,6 +30,6 @@ export class Post {
     })
     modifiedOn: Date;
 
-    @ManyToOne(() => User, (user) => user.posts)
+    @ManyToOne(() => User, (user) => user.blogposts)
     creator: User;
 }

@@ -1,44 +1,43 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Anticipator } from './entities/anticipator.entity';
+import { AnticipatorRepository } from './repository/anticipator.repository';
 
 
 @Injectable()
 export class ComingSoonService {
-    constructor(@InjectRepository(Anticipator) private repo: Repository<Anticipator>){}
+    constructor(@InjectRepository(AnticipatorRepository) private anticipatorRepository: AnticipatorRepository){}
 
     create(email: string) {
-        if(this.repo.find({email})){
+        if(this.anticipatorRepository.find({email})){
             throw new NotAcceptableException("You are already on the waiting list!");
         }
-        const anticipator = this.repo.create({email});
-        return this.repo.save(anticipator);
+        const anticipator = this.anticipatorRepository.create({email});
+        return this.anticipatorRepository.save(anticipator);
     }
 
     find(email: string){
-        return this.repo.find({email});
+        return this.anticipatorRepository.find({email});
     }
 
     async findOne(id: number) {
         if(!id) return null;
-        const user = await this.repo.findOne(id);
-        if(!user) throw new NotFoundException("Couldn't find that ID!")
-        return user;
+        const anticipator = await this.anticipatorRepository.findOne(id);
+        if(!anticipator) throw new NotFoundException("Couldn't find that ID!")
+        return anticipator;
     }
 
     async findAll() {
-        const users = await this.repo.find({select: ['email']});
-        return users;
+        const anticipators = await this.anticipatorRepository.find({select: ['email']});
+        return anticipators;
     }
     
     async remove(id: number) {
         if(!id) return null;
-        const user = await this.repo.findOne(id);
-        if(!user) {
+        const anticipator = await this.anticipatorRepository.findOne(id);
+        if(!anticipator) {
             throw new NotFoundException("User does not exist");
         }
-        return this.repo.remove(user);
+        return this.anticipatorRepository.remove(anticipator);
     }
     
 }

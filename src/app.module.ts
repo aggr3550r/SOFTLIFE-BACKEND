@@ -7,8 +7,7 @@ import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
-import { BlogModule } from './modules/blog/blog.module';
-import { PostsModule } from './modules/blog/posts.module';
+import { BlogPostModule } from './modules/blogposts/blogpost.module';
 import { ShopModule } from './modules/shop/shop.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ComingSoonModule } from './modules/coming-soon/coming-soon.module';
@@ -25,7 +24,7 @@ const cookieSession = require('cookie-session');
     isGlobal : true,
     envFilePath: `.env.${process.env.NODE_ENV}`
   }),
-  UsersModule, PostsModule, BlogModule, ShopModule,
+  UsersModule, BlogPostModule, ShopModule,
   HttpModule,
   TypeOrmModule.forRoot(),
   ScheduleModule.forRoot(),

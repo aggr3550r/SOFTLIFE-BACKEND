@@ -2,7 +2,7 @@ import { Transform, Expose } from "class-transformer";
 import { User } from "src/modules/users/entities/user.entity";
 
 
-export class PostDTO {
+export class BlogPostDTO {
     @Expose()
     id: number;
 

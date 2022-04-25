@@ -1,4 +1,4 @@
-import { Post } from "src/modules/blog/entities/post.entity";
+import { BlogPost } from "src/modules/blogposts/entities/blogpost.entity";
 import { AfterInsert, AfterUpdate, AfterRemove, Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 
 @Entity()
@@ -42,6 +42,6 @@ export class User {
         console.log("Removed user with an ID of", this.id);
     }
 
-    @OneToMany(() => Post, (post) => post.creator)
-    posts: Post[];
+    @OneToMany(() => BlogPost, (blogpost) => blogpost.creator)
+    blogposts: BlogPost[];
 }

@@ -1,40 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Message } from './entities/contact.entity';
+import { Message } from './entities/message.entity';
 import { NotFoundException } from '@nestjs/common';
 import { UpdateMessageDTO } from './dtos/update-message.dto';
+import { MessageRepository } from './repository/message.repository';
 
 
 @Injectable()
 export class ContactService {
-    constructor(@InjectRepository(Message) private repo: Repository<Message>) {}
+    constructor(@InjectRepository(MessageRepository) private messageRepository: MessageRepository) {}
 
-    create(name: string, email: string, message: string) {
-        const data = this.repo.create({name, email, message});
-        return this.repo.save(data);
+    create(name: string, email: string, message: string): Promise<Message> {
+        const data = this.messageRepository.create({name, email, message});
+        return this.messageRepository.save(data);
     }
 
-    find(email: string) {
+    async find(email: string): Promise<Message[]> {
         if(!email){
             return null;
         }
-        return this.repo.find({email});
-    }
-
-    findOne(id: number) {
-        if(!id) {
-            return null;
-        }
-        return this.repo.findOne(id);
-    }
-
-    async findAllMessages() {
-        const data = await this.repo.find();
+        const data = await this.messageRepository.find({email}); 
         return data;
     }
 
-    async findAllRepliedMessages() {
+    async findOne(id: number): Promise<Message> {
+        if(!id) {
+            return null;
+        }
+        const data = await this.messageRepository.findOne(id);
+        return data; 
+    }
+
+    async findAllMessages(): Promise<Message[]> {
+        const data = await this.messageRepository.find();
+        return data;
+    }
+
+    async findAllRepliedMessages(): Promise<any[]> {
         const messages = await this.findAllMessages();
         const repliedMessages = [];
         messages.forEach((message) => {
@@ -43,12 +46,12 @@ export class ContactService {
         return repliedMessages;
     }
 
-    async update(id: number, body: UpdateMessageDTO){
+    async update(id: number, body: UpdateMessageDTO): Promise<Message>{
         const message = await this.findOne(id);
         if (!message) {
             throw new NotFoundException("Message not found");
         }
         Object.assign(message, body);
-        return this.repo.save(message); 
+        return this.messageRepository.save(message); 
     }
 }

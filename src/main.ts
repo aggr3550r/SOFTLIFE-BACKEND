@@ -31,7 +31,7 @@ async function bootstrap() {
     })
   );
 
-  await app.listen(port, () => winstonLogger.info(`app running on ${port}`));
+  await app.listen(port, () => console.log(`- App running on PORT ${port}`));
 
 }
 bootstrap();
