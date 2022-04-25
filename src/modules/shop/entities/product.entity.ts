@@ -1,10 +1,6 @@
-import { User } from "src/modules/users/entities/user.entity";
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
-import { Seller } from "./seller.entity";
+import { BaseModel } from "src/base.model";
+import { Entity } from "typeorm";
 
 
 @Entity()
-export class Product {
-    @PrimaryGeneratedColumn()
-    id: number;
-}
+export class Product extends BaseModel {}

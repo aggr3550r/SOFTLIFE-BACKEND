@@ -1,11 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
+import { BaseModel } from "src/models/base.model";
+import { Column, Entity} from "typeorm";
 
 
 @Entity()
-export class Message {
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class Message extends BaseModel {
     @Column()
     name: string;
 
@@ -14,12 +12,6 @@ export class Message {
 
     @Column({nullable: false})
     message: string;
-
-    @CreateDateColumn({
-        nullable: false,
-        name: "dt_created"
-    })
-    createdOn: Date;
 
     @Column({default: false})
     replied: boolean;

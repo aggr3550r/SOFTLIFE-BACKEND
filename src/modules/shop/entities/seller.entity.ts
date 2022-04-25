@@ -1,8 +1,8 @@
-import { User } from "src/modules/users/entities/user.entity";
+import { BaseModel } from "src/base.model";
 import { Column, Entity } from "typeorm";
 
 @Entity()
-export class Seller extends User {
+export class Seller extends BaseModel {
     @Column({default: "false"})
     seller: boolean;
 
@@ -17,7 +17,4 @@ export class Seller extends User {
 
     @Column()
     zip: number;
-    
-    // @Column({default: Date.now})
-    // created: Date;
 }

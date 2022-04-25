@@ -1,11 +1,9 @@
+import { BaseModel } from "src/models/base.model";
 import { User } from "src/modules/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne } from "typeorm";
 
 @Entity()
-export class BlogPost {
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class BlogPost extends BaseModel {
     @Column({nullable: false})
     title: string;
 
@@ -17,18 +15,6 @@ export class BlogPost {
 
     @Column({default: false})
     approved: boolean;
-
-    @CreateDateColumn({
-        nullable: false,
-        name: "dt_created"
-    })
-    createdOn: Date;
-
-    @UpdateDateColumn({
-        nullable: false,
-        name: "dt_updated"
-    })
-    modifiedOn: Date;
 
     @ManyToOne(() => User, (user) => user.blogposts)
     creator: User;

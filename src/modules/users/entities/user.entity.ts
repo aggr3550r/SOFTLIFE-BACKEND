@@ -1,11 +1,9 @@
+import { UserBaseModel } from "src/models/user-base.model";
 import { BlogPost } from "src/modules/blogposts/entities/blogpost.entity";
-import { AfterInsert, AfterUpdate, AfterRemove, Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { AfterInsert, AfterUpdate, AfterRemove, Entity, Column, OneToMany } from "typeorm";
 
 @Entity()
-export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class User extends UserBaseModel {
     @Column()
     email: string;
     
@@ -16,16 +14,10 @@ export class User {
     username: string;
 
     @Column({ default: false})
-    admin: boolean;
-
-    @Column({ default: false})
     seller: boolean;
 
     @Column({ default: false})
     creator: boolean;
-
-    @Column({default: true})
-    active: boolean;
 
     @AfterInsert()
     logInsert() {
