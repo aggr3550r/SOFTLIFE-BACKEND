@@ -1,48 +1,46 @@
 ### Create a new user
-POST http://localhost:5000/auth/signup
+POST http://localhost:8086/auth/signup
 content-type: application/json
 
 {
     "email": "midas@kippa.africa",
     "username": "Midas",
-    "password": "midas"
+    "password": "password"
 }
 
 
-
 ### Signin an existing user
-POST http://localhost:5000/auth/signin
+POST http://localhost:8086/auth/signin
 content-type: application/json
 
 {
     "email": "victor@kippa.africa",
-    "password": "victor"
+    "password": "password"
 }
 
 
-
 ### Signout the currently signed in user
-POST http://localhost:5000/auth/signout
+POST http://localhost:8086/auth/signout
 
 
 
 ### Find a particular user with ID   
-GET http://localhost:5000/auth/2
+GET http://localhost:8086/auth/be7c92b2-a409-428e-a0d9-4f1232aa3844
 
 
 
 ### Find all users registered with a given email
-GET http://localhost:5000/auth?email=hello@kippa.africa
+GET http://localhost:8086/auth?email=midas@kippa.africa
 
 
 
 ### Delete a user with a given ID
-DELETE http://localhost:5000/auth/1
+DELETE http://localhost:8086/auth?id=be7c92b2-a409-428e-a0d9-4f1232aa3844
 
 
 
 ### Update a user with a given ID
-PATCH http://localhost:5000/auth/1
+PATCH http://localhost:8086/auth/1
 content-type: application/json
 
 {
@@ -53,9 +51,9 @@ content-type: application/json
 
 
 ### Get the currently signed in user
-GET http://localhost:5000/auth/whoami
+GET http://localhost:8086/auth/whoami
 
 
 
 ### Get all registered emails
-GET http://localhost:5000/auth/emails
+GET http://localhost:8086/auth/emails

@@ -49,8 +49,8 @@ export class UsersController {
      }
 
      @Get('/:id')
-     findUser(@Param('id') id: string){
-         return this.usersService.findOne(parseInt(id));
+     findUser(@Param('id') id){
+         return this.usersService.findOne(id);
      }
 
      @Get()
@@ -59,9 +59,9 @@ export class UsersController {
      }
 
 
-     @Delete('/:id')
-     removeUser(@Param('id') id: string){
-         return this.usersService.remove(parseInt(id));
+     @Delete()
+     removeUser(@Query('id') id){
+         return this.usersService.remove(id);
      }
 
      @Patch('/:id')

@@ -61,7 +61,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
 
     response.status(status).json({
       statusCode: SoftlifeResponseStatus.FAILED,
-      message: message || 'An error occured while process this request!',
+      message: message || 'An error occured while processing this request!',
       data: null
     });
   }

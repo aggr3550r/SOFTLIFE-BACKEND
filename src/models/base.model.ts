@@ -10,3 +10,5 @@ export abstract class BaseModel {
   @UpdateDateColumn()
   updated_at?: Date;
 }
+
+// { type: 'uuid' }

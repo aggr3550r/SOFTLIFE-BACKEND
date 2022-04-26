@@ -43,8 +43,7 @@ export class AppModule {
   constructor(private configService: ConfigService){}
   configure(consumer: MiddlewareConsumer){
     consumer.apply(cookieSession({
-      // keys: [process.env.COOKIE_KEY]
-      keys: this.configService.get<string>('COOKIE_KEY')
+      keys: [process.env.COOKIE_KEY]
     })).forRoutes('*');
   }
 }

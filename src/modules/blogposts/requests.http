@@ -1,5 +1,5 @@
 ### Create a new blogpost
-POST http://localhost:5000/blogposts
+POST http://localhost:8086/blogposts
 content-type: application/json
 
 {
@@ -10,11 +10,11 @@ content-type: application/json
 
 
 ### Get a particular blogpost based on ID
-GET http://localhost:5000/blogposts/6
+GET http://localhost:8086/blogposts/6
 
 
 ### Approve a particular post based on ID
-PATCH http://localhost:5000/blogposts/approve/3
+PATCH http://localhost:8086/blogposts/approve/3
 content-type: application/json
 
 {
@@ -22,8 +22,8 @@ content-type: application/json
 }   
 
 ### Get all posts
-GET http://localhost:5000/blogposts
+GET http://localhost:8086/blogposts
 
 
 ### Get all approved posts
-GET http://localhost:5000/blogposts/passers
+GET http://localhost:8086/blogposts/passers

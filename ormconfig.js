@@ -1,5 +1,5 @@
 const dbConfig = {
-   synchronize: true,
+   synchronize: false,
    retryAttempts: 3,
    migrations: ['migrations/*.js'],
    cli: {

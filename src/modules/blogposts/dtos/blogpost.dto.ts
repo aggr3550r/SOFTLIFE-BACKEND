@@ -1,9 +1,11 @@
 import { Transform, Expose } from "class-transformer";
+import { IsUUID } from "class-validator";
 import { User } from "src/modules/users/entities/user.entity";
 
 
 export class BlogPostDTO {
     @Expose()
+    @IsUUID()
     id: number;
 
     @Expose()

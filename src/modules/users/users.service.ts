@@ -31,7 +31,7 @@ export class UsersService {
         return emails;
     }
 
-    findOne(id: number) {
+    findOne(id) {
         if(!id){
             return null;
         }
@@ -47,7 +47,7 @@ export class UsersService {
         return this.userRepository.save(user); 
     }
 
-    async remove(id: number){
+    async remove(id){
         const user = await this.userRepository.findOne(id);
         if(!user){
             throw new NotFoundException("User does not exist"); 

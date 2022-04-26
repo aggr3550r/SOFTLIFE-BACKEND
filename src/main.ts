@@ -8,7 +8,7 @@ import { winstonLogger, WinstonLoggerService, winstonStream } from './utils/wins
 
 
 async function bootstrap() {
-  const port = process.env.PORT ? Number(process.env.PORT) : 5000;
+  const port = process.env.PORT ? Number(process.env.PORT) : 8086;
 
   const app = await NestFactory.create(AppModule, {
     logger: new WinstonLoggerService()

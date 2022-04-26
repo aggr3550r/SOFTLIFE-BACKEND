@@ -1,5 +1,5 @@
 ### Send us a message
-POST http://localhost:5000/contact-us
+POST http://localhost:8086/contact-us
 content-type: application/json
 
 {
@@ -11,12 +11,12 @@ content-type: application/json
 
 
 ### Get all messages
-GET http://localhost:5000/contact-us/all-messages
+GET http://localhost:8086/contact-us/all-messages
 
 
 
 ### Reply a message, technically
-POST http://localhost:5000/contact-us/reply-message/3
+POST http://localhost:8086/contact-us/reply-message/3
 content-type: application/json
 
 {
@@ -26,5 +26,5 @@ content-type: application/json
 
 
 ### Get all replied messages
-GET http://localhost:5000/contact-us/replied-messages
+GET http://localhost:8086/contact-us/replied-messages
 
