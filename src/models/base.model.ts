@@ -1,4 +1,4 @@
-import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export abstract class BaseModel {
   @PrimaryGeneratedColumn('uuid')
@@ -10,5 +10,3 @@ export abstract class BaseModel {
   @UpdateDateColumn()
   updated_at?: Date;
 }
-
-// { type: 'uuid' }
