@@ -3,8 +3,8 @@ POST http://localhost:8086/auth/signup
 content-type: application/json
 
 {
-    "email": "midas@kippa.africa",
-    "username": "Midas",
+    "email": "victor@kippa.africa",
+    "username": "Victor",
     "password": "password"
 }
 
@@ -35,12 +35,12 @@ GET http://localhost:8086/auth?email=midas@kippa.africa
 
 
 ### Delete a user with a given ID
-DELETE http://localhost:8086/auth?id=be7c92b2-a409-428e-a0d9-4f1232aa3844
+DELETE http://localhost:8086/auth?id=032688c9-424f-46c4-8de3-cd664e36b3d6
 
 
 
 ### Update a user with a given ID
-PATCH http://localhost:8086/auth/1
+PATCH http://localhost:8086/auth/1c2f8f3b-aa08-41ff-81e7-4057fe76abc5
 content-type: application/json
 
 {

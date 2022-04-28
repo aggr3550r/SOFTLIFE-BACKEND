@@ -11,31 +11,37 @@ import { Message } from './entities/message.entity';
 @Controller('contact-us')
 @Serialize(MessageDTO)
 export class ContactController {
-    constructor(private contactService: ContactService) {}
+  constructor(private contactService: ContactService) {}
 
-    @Post()
-    @UseGuards(AuthGuard)
-    sendMessage (@Body() body: CreateMessageDTO): Promise<Message> {
-        const message = this.contactService.create(body.name, body.email, body.message);
-        return message;
-    }
+  @Post()
+  @UseGuards(AuthGuard)
+  sendMessage(@Body() body: CreateMessageDTO): Promise<Message> {
+    const message = this.contactService.create(
+      body.name,
+      body.email,
+      body.message,
+    );
+    return message;
+  }
 
-    @Get('/all-messages')
-    @UseGuards(AdminGuard)
-    getAllMessages (): Promise<Message[]> {
-        return this.contactService.findAllMessages()
-    }
+  @Get('/all-messages')
+  @UseGuards(AdminGuard)
+  getAllMessages(): Promise<Message[]> {
+    return this.contactService.findAllMessages();
+  }
 
-    @Post('reply-message/:id')
-    @UseGuards(AdminGuard)
-    replyMessage(@Param('id') id: string, @Body() body: UpdateMessageDTO): Promise<Message> {
-        return this.contactService.update(parseInt(id), body);
-    }
+  @Post('reply-message/:id')
+  @UseGuards(AdminGuard)
+  replyMessage(
+    @Param('id') id: string,
+    @Body() body: UpdateMessageDTO,
+  ): Promise<Message> {
+    return this.contactService.update(parseInt(id), body);
+  }
 
-    @Get('/replied-messages')
-    @UseGuards(AdminGuard)
-    getUnrepliedMessages(): Promise<Message[]> {
-        return this.contactService.findAllRepliedMessages();
-    }
-    
+  @Get('/replied-messages')
+  @UseGuards(AdminGuard)
+  getUnrepliedMessages(): Promise<Message[]> {
+    return this.contactService.findAllRepliedMessages();
+  }
 }

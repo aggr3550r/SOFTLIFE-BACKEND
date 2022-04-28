@@ -4,7 +4,7 @@ const dbConfig = {
   cli: {
     migrationsDir: 'migrations',
   },
-  synchronize: false
+  synchronize: true,
 };
 
 switch (process.env.NODE_ENV) {
