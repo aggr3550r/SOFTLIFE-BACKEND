@@ -3,8 +3,8 @@ POST http://localhost:8086/auth/signup
 content-type: application/json
 
 {
-    "email": "victor@kippa.africa",
-    "username": "Victor",
+    "email": "midas@kippa.africa",
+    "username": "Midas",
     "password": "password"
 }
 
