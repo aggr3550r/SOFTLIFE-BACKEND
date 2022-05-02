@@ -10,11 +10,11 @@ content-type: application/json
 
 
 ### Get a particular blogpost based on ID
-GET http://localhost:8086/blogposts/6
+GET http://localhost:8086/blogposts/02e0046f-85e8-41ad-ad1c-8095559e3f9b
 
 
 ### Approve a particular post based on ID
-PATCH http://localhost:8086/blogposts/approve/3
+PATCH http://localhost:8086/blogposts/approve/02e0046f-85e8-41ad-ad1c-8095559e3f9b
 content-type: application/json
 
 {
@@ -23,6 +23,9 @@ content-type: application/json
 
 ### Get all posts
 GET http://localhost:8086/blogposts
+
+### Get all posts
+GET http://localhost:8086/blogposts/paginated?page=1&take=2
 
 
 ### Get all approved posts

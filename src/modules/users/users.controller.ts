@@ -21,6 +21,7 @@ import { User } from './entities/user.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { SignInDTO } from './dtos/signin.dto';
 import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
+import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
 
 @Controller('auth')
 @Serialize(UserDTO)

@@ -6,7 +6,8 @@ import {
   UseGuards,
   Param,
   Get,
-  NotFoundException
+  NotFoundException,
+  Query
 } from '@nestjs/common';
 import { AdminGuard } from 'src/guards/admin.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
@@ -18,6 +19,7 @@ import { CreateBlogPostDTO } from './dtos/create-blogpost.dto';
 import { BlogPostDTO } from './dtos/blogpost.dto';
 import { UpdatePostDTO } from './dtos/update-blogpost.dto';
 import { BlogPostService } from './blogpost.service';
+import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
 
 @Controller('blogposts')
 export class BlogPostController {
@@ -30,36 +32,37 @@ export class BlogPostController {
     return this.blogPostService.create(body, user);
   }
 
-  @Patch('approve/:id')
+  @Patch('/approve/:id')
   @UseGuards(AdminGuard)
   approvePost(@Param('id') id: string, @Body() body: ApproveBlogPostDTO) {
     return this.blogPostService.changeApprovalStatus(id, body.approved);
   }
 
-  @Get('approved')
-  async getAllApprovedPosts() {
-    const blogposts = await this.getAllPosts();
-    const approved_posts = [];
-    blogposts.forEach((blogpost) => {
-      if (blogpost.approved) approved_posts.push(blogpost);
-    });
-    return approved_posts;
+  // @Get('/approved')
+  // async getAllApprovedPosts() {
+  //   const blogposts = await this.getAllPosts();
+  //   const approved_posts = [];
+  //   blogposts.forEach((blogpost) => {
+  //     if (blogpost.approved) approved_posts.push(blogpost);
+  //   });
+  //   return approved_posts;
+  // }
+
+  @Get()
+  async getBlogPosts(@Query() page_options_dto: PageOptionsDTO) {
+    const ouptut = await this.blogPostService.fetchPosts(page_options_dto);
+    return ouptut.data;
   }
 
   @Get('/:id')
   async getPost(@Param('id') id: string) {
-    const blogpost = await this.blogPostService.findOne(parseInt(id));
+    const blogpost = await this.blogPostService.findOne(id);
     if (!blogpost) throw new NotFoundException('That blogpost does not exist!');
     return blogpost;
   }
 
-  @Get()
-  getAllPosts() {
-    return this.blogPostService.findAll();
-  }
-
   @Patch('/:id')
   updatePost(@Param('id') id: string, @Body() body: UpdatePostDTO) {
-    return this.blogPostService.update(parseInt(id), body);
+    return this.blogPostService.update(id, body);
   }
 }
