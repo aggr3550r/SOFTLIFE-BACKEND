@@ -3,51 +3,74 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateUserDTO } from './dtos/update-user.dto';
 import { UserRepository } from './repository/user.repository';
 import { User } from './entities/user.entity';
+import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
+import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
+import { PageDTO } from 'src/dtos/page.dto';
+import { winstonLogger } from 'src/utils/winston';
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(UserRepository) private userRepository: UserRepository){}
+  constructor(
+    @InjectRepository(UserRepository) private userRepository: UserRepository
+  ) {}
 
-    create(email: string, password:string, username: string): Promise<User>{
-        if(!email || !password){
-            return null;
-        }
-        const user = this.userRepository.create({email, password, username});
-        return this.userRepository.save(user);
+  create(email: string, password: string, username: string): Promise<User> {
+    if (!email || !password) {
+      return null;
     }
+    const user = this.userRepository.create({ email, password, username });
+    return this.userRepository.save(user);
+  }
 
-    find(email: string): Promise<User[]> {
-        if(!email){
-            return null;
-        }
-        return this.userRepository.find({email});
+  async find(email: string): Promise<User[]> {
+    if (!email) {
+      return null;
     }
+    return await this.userRepository.find({ email });
+  }
 
-    async findAllEmails(): Promise<User[]> {
-        const users_emails = await this.userRepository.find({select: ['email']});
-        return users_emails;
-    }
+  async findEmails(page_options_dto: PageOptionsDTO) {
+    try {
+      const [items, count] = await this.userRepository.findAndCount({
+        select: ['email'],
+        order: {
+          created_at: 'DESC'
+        },
+        skip: page_options_dto.skip,
+        take: page_options_dto.take
+      });
 
-    findOne(id: string): Promise<User> {
-        if(!id){
-            return null;
-        }
-        return this.userRepository.findOne(id);
-    }
+      const page_meta_dto = new PageMetaDTO({
+        total_items: count,
+        page_options_dto
+      });
 
-    async update(id: string, body: UpdateUserDTO): Promise<User>{
-        const user = await this.userRepository.findOne(id);
-        if (!user) {
-            throw new NotFoundException("User not found");
-        }
-        Object.assign(user, body);
-        return this.userRepository.save(user); 
+      return new PageDTO(items, page_meta_dto);
+    } catch (error) {
+      winstonLogger.error('error \n %s', error);
     }
+  }
 
-    async remove(id: string): Promise<User>{
-        const user = await this.userRepository.findOne(id);
-        if(!user){
-            throw new NotFoundException("User does not exist"); 
-        }
-        return this.userRepository.remove(user);
+  async findOne(id: string): Promise<User> {
+    if (!id) {
+      return null;
     }
+    return await this.userRepository.findOne(id);
+  }
+
+  async update(id: string, body: UpdateUserDTO): Promise<User> {
+    const user = await this.userRepository.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    Object.assign(user, body);
+    return this.userRepository.save(user);
+  }
+
+  async remove(id: string): Promise<User> {
+    const user = await this.userRepository.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+    return this.userRepository.remove(user);
+  }
 }

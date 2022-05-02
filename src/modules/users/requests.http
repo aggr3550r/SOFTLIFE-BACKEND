@@ -3,8 +3,8 @@ POST http://localhost:8086/auth/signup
 content-type: application/json
 
 {
-    "email": "midas@kippa.africa",
-    "username": "Midas",
+    "email": "jephtah@kippa.africa",
+    "username": "Jeph",
     "password": "password"
 }
 
@@ -55,5 +55,5 @@ GET http://localhost:8086/auth/whoami
 
 
 
-### Get all registered emails
-GET http://localhost:8086/auth/emails
+### Get all registered emails - refactored
+GET http://localhost:8086/auth/emails?page=1&take=2

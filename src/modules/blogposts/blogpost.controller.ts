@@ -6,7 +6,7 @@ import {
   UseGuards,
   Param,
   Get,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
 import { AdminGuard } from 'src/guards/admin.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
@@ -36,7 +36,7 @@ export class BlogPostController {
     return this.blogPostService.changeApprovalStatus(id, body.approved);
   }
 
-  @Get('passers')
+  @Get('approved')
   async getAllApprovedPosts() {
     const blogposts = await this.getAllPosts();
     const approved_posts = [];

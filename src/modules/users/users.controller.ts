@@ -8,7 +8,7 @@ import {
   Query,
   Delete,
   Session,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
@@ -20,13 +20,14 @@ import { CurrentUser } from '../../decorators/current-user.decorator';
 import { User } from './entities/user.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { SignInDTO } from './dtos/signin.dto';
+import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
 
 @Controller('auth')
 @Serialize(UserDTO)
 export class UsersController {
   constructor(
     private usersService: UsersService,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   @Get('/whoami')
@@ -38,12 +39,12 @@ export class UsersController {
   @Post('/signup')
   async createUser(
     @Body() body: CreateUserDTO,
-    @Session() session: any,
+    @Session() session: any
   ): Promise<User> {
     const user = await this.authService.signup(
       body.email,
       body.password,
-      body.username,
+      body.username
     );
     session.userID = user.id;
     return user;
@@ -52,7 +53,7 @@ export class UsersController {
   @Post('/signin')
   async signin(
     @Body() body: SignInDTO,
-    @Session() session: any,
+    @Session() session: any
   ): Promise<User> {
     const user = await this.authService.signin(body.email, body.password);
     session.userID = user.id;
@@ -65,18 +66,14 @@ export class UsersController {
   }
 
   @Get('/emails')
-  getAllRegisteredEmails(): Promise<User[]> {
-    return this.usersService.findAllEmails();
+  async findEmails(@Query() page_options_dto: PageOptionsDTO): Promise<User[]> {
+    const output = await this.usersService.findEmails(page_options_dto);
+    return output.data;
   }
 
   @Get('/:id')
   findUser(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne(id);
-  }
-
-  @Get()
-  findAllUsers(@Query('email') email: string): Promise<User[]> {
-    return this.usersService.find(email);
   }
 
   @Delete()
@@ -87,7 +84,7 @@ export class UsersController {
   @Patch('/:id')
   updateUser(
     @Param('id') id: string,
-    @Body() body: UpdateUserDTO,
+    @Body() body: UpdateUserDTO
   ): Promise<User> {
     return this.usersService.update(id, body);
   }
