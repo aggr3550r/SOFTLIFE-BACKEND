@@ -8,7 +8,7 @@ import {
   Query,
   Delete,
   Session,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
@@ -28,7 +28,7 @@ import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
 export class UsersController {
   constructor(
     private usersService: UsersService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   @Get('/whoami')
@@ -40,12 +40,12 @@ export class UsersController {
   @Post('/signup')
   async createUser(
     @Body() body: CreateUserDTO,
-    @Session() session: any
+    @Session() session: any,
   ): Promise<User> {
     const user = await this.authService.signup(
       body.email,
       body.password,
-      body.username
+      body.username,
     );
     session.userID = user.id;
     return user;
@@ -54,7 +54,7 @@ export class UsersController {
   @Post('/signin')
   async signin(
     @Body() body: SignInDTO,
-    @Session() session: any
+    @Session() session: any,
   ): Promise<User> {
     const user = await this.authService.signin(body.email, body.password);
     session.userID = user.id;
@@ -63,7 +63,8 @@ export class UsersController {
 
   @Post('/signout')
   signOut(@Session() session: any): void {
-    session.userID = null;
+    let user_id = session.userID;
+    user_id = null;
   }
 
   @Get('/emails')
@@ -85,7 +86,7 @@ export class UsersController {
   @Patch('/:id')
   updateUser(
     @Param('id') id: string,
-    @Body() body: UpdateUserDTO
+    @Body() body: UpdateUserDTO,
   ): Promise<User> {
     return this.usersService.update(id, body);
   }
