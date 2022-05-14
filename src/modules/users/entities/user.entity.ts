@@ -22,10 +22,10 @@ export class User extends UserBaseModel {
   username: string;
 
   @Column({ default: false })
-  seller: boolean;
+  is_seller: boolean;
 
   @Column({ default: false })
-  creator: boolean;
+  is_blogger: boolean;
 
   @AfterInsert()
   logInsert() {
