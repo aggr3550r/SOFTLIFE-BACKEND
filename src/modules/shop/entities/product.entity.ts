@@ -1,10 +1,14 @@
 import { BaseModel } from 'src/models/base.model';
+import { Image } from 'src/types/image.type';
 import { Column, Entity } from 'typeorm';
 
 @Entity()
 export class Product extends BaseModel {
   @Column()
   name: string;
+
+  @Column()
+  product_image: Image;
 
   @Column()
   description: string;

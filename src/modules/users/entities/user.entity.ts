@@ -1,6 +1,7 @@
 import { UserBaseModel } from 'src/models/user-base.model';
 import { BlogPost } from 'src/modules/blogposts/entities/blogpost.entity';
 import { Cart } from 'src/modules/shop/entities/cart.entity';
+import { Image } from 'src/types/image.type';
 import {
   AfterInsert,
   AfterUpdate,
@@ -20,6 +21,9 @@ export class User extends UserBaseModel {
 
   @Column()
   username: string;
+
+  @Column()
+  profile_picture: Image;
 
   @Column({ default: false })
   is_seller: boolean;
