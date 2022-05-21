@@ -7,18 +7,19 @@ import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
 import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
 import { PageDTO } from 'src/dtos/page.dto';
 import { winstonLogger } from 'src/utils/winston';
+import { CreateUserDTO } from './dtos/create-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(UserRepository) private userRepository: UserRepository
+    @InjectRepository(UserRepository) private userRepository: UserRepository,
   ) {}
 
-  create(email: string, password: string, username: string): Promise<User> {
-    if (!email || !password) {
+  async create(create_user_dto: CreateUserDTO): Promise<User> {
+    if (!create_user_dto.email || !create_user_dto.password) {
       return null;
     }
-    const user = this.userRepository.create({ email, password, username });
-    return this.userRepository.save(user);
+    const user = this.userRepository.create(create_user_dto);
+    return await this.userRepository.save(user);
   }
 
   async find(email: string): Promise<User[]> {
@@ -33,15 +34,15 @@ export class UsersService {
       const [items, count] = await this.userRepository.findAndCount({
         select: ['email'],
         order: {
-          created_at: 'DESC'
+          created_at: 'DESC',
         },
         skip: page_options_dto.skip,
-        take: page_options_dto.take
+        take: page_options_dto.take,
       });
 
       const page_meta_dto = new PageMetaDTO({
         total_items: count,
-        page_options_dto
+        page_options_dto,
       });
 
       return new PageDTO(items, page_meta_dto);

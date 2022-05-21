@@ -5,7 +5,6 @@ import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
 import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
 import { User } from 'src/modules/users/entities/user.entity';
 import { winstonLogger } from 'src/utils/winston';
-import winston from 'winston/lib/winston/config';
 import { CreateBlogPostDTO } from './dtos/create-blogpost.dto';
 import { UpdatePostDTO } from './dtos/update-blogpost.dto';
 import { BlogPost } from './entities/blogpost.entity';
@@ -15,7 +14,7 @@ import { BlogPostRepository } from './repository/blogpost.repository';
 export class BlogPostService {
   constructor(
     @InjectRepository(BlogPostRepository)
-    private blogpostRepository: BlogPostRepository
+    private blogpostRepository: BlogPostRepository,
   ) {}
 
   create(blogPostDto: CreateBlogPostDTO, user: User) {
@@ -30,20 +29,20 @@ export class BlogPostService {
   }
 
   async fetchPosts(
-    page_options_dto: PageOptionsDTO
+    page_options_dto: PageOptionsDTO,
   ): Promise<PageDTO<BlogPost>> {
     try {
       const [items, count] = await this.blogpostRepository.findAndCount({
         order: {
-          created_at: 'DESC'
+          created_at: 'DESC',
         },
         skip: page_options_dto.skip,
-        take: page_options_dto.take
+        take: page_options_dto.take,
       });
 
       const page_meta_dto = new PageMetaDTO({
         total_items: count,
-        page_options_dto
+        page_options_dto,
       });
 
       return new PageDTO(items, page_meta_dto);

@@ -1,9 +1,9 @@
-import { BaseModel } from 'src/models/base.model';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { Cart } from './cart.entity';
+import { Product } from './product.entity';
 
 @Entity()
-export class CartItem extends BaseModel {
+export class CartItem extends Product {
   @Column()
   quantity: number;
 
@@ -15,4 +15,7 @@ export class CartItem extends BaseModel {
 
   @ManyToOne(() => Cart, (cart) => cart.cart_items)
   cart: Cart;
+
+  @ManyToOne(() => Product, (product) => product.cart_items)
+  product: Product;
 }

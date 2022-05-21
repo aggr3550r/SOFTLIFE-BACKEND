@@ -17,34 +17,44 @@ import { ContactModule } from './modules/contact/contact.module';
 import { HealthController } from './health/health.controller';
 const cookieSession = require('cookie-session');
 
-
-
 @Module({
-  imports: [ ConfigModule.forRoot({
-    isGlobal : true,
-    envFilePath: `.env.${process.env.NODE_ENV}`
-  }),
-  UsersModule, BlogPostModule, ShopModule,
-  HttpModule,
-  TypeOrmModule.forRoot(),
-  ScheduleModule.forRoot(),
-  ComingSoonModule,
-  ContactModule, TerminusModule],
-  controllers: [AppController, MailController, HealthController],
-  providers: [AppService,
-  {
-    provide: APP_PIPE,
-    useValue: new ValidationPipe({
-      whitelist: true
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-  }, SendgridService]
+    UsersModule,
+    BlogPostModule,
+    ShopModule,
+    HttpModule,
+    TypeOrmModule.forRoot(),
+    ScheduleModule.forRoot(),
+    ComingSoonModule,
+    ContactModule,
+    TerminusModule,
+  ],
+  controllers: [AppController, MailController, HealthController],
+  providers: [
+    AppService,
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+      }),
+    },
+    SendgridService,
+  ],
 })
 export class AppModule {
-  constructor(private configService: ConfigService){}
-  configure(consumer: MiddlewareConsumer){
-    consumer.apply(cookieSession({
-      keys: [process.env.COOKIE_KEY]
-    })).forRoutes('*');
+  constructor(private configService: ConfigService) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cookieSession({
+          keys: [process.env.COOKIE_KEY],
+        }),
+      )
+      .forRoutes('*');
   }
 }
 //this.configService.get('COOKIE_KEY')

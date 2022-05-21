@@ -22,7 +22,7 @@ export class User extends UserBaseModel {
   @Column()
   username: string;
 
-  @Column()
+  @Column({ nullable: true })
   profile_picture: Image;
 
   @Column({ default: false })

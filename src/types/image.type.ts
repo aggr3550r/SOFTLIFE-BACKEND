@@ -1,3 +1,1 @@
-export type Image = {
-  image_url: string;
-};
+export type Image = string;

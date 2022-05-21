@@ -21,7 +21,6 @@ import { User } from './entities/user.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { SignInDTO } from './dtos/signin.dto';
 import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
-import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
 
 @Controller('auth')
 @Serialize(UserDTO)
@@ -42,11 +41,7 @@ export class UsersController {
     @Body() body: CreateUserDTO,
     @Session() session: any,
   ): Promise<User> {
-    const user = await this.authService.signup(
-      body.email,
-      body.password,
-      body.username,
-    );
+    const user = await this.authService.signup(body);
     session.userID = user.id;
     return user;
   }
