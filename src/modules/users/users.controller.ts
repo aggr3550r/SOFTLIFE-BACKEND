@@ -33,7 +33,7 @@ export class UsersController {
   @Get('/whoami')
   @UseGuards(AuthGuard)
   async whoAmI(@CurrentUser() user: User): Promise<User> {
-    return await user;
+    return user;
   }
 
   @Post('/signup')

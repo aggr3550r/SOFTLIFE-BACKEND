@@ -1,0 +1,13 @@
+### Create A Product
+POST http://localhost:8086/product/create-product
+content-type: application/json
+
+{
+    "name": "T-Shirt",
+    "description": "Yellow T-Shirt",
+    "price": 25.00,
+    "quantity_in_stock": 2
+}
+
+### Preview A Product
+GET http://localhost:8086/product/preview-product/3519d78a-6fa0-4182-93d2-42ac0c44d8f8

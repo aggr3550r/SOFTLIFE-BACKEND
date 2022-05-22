@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDTO } from 'src/dtos/page.dto';
 import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
 import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
+import { User } from 'src/modules/users/entities/user.entity';
+import { UserRepository } from 'src/modules/users/repository/user.repository';
 import { winstonLogger } from 'src/utils/winston';
 import { CreateProductDTO } from '../dtos/product/create-product.dto';
 import { UpdateProductDTO } from '../dtos/product/update-product.dto';
@@ -14,12 +16,20 @@ export class ProductService {
   constructor(
     @InjectRepository(ProductRepository)
     private productRepository: ProductRepository,
+    @InjectRepository(UserRepository) private userRepository: UserRepository,
   ) {}
 
-  createProduct(create_product_dto: CreateProductDTO): Promise<Product> {
+  async createProduct(
+    create_product_dto: CreateProductDTO,
+    user: User,
+  ): Promise<Product> {
     try {
       const product = this.productRepository.create(create_product_dto);
-      return this.productRepository.save(product);
+      const user_id = user.id;
+      const user_details = await this.userRepository.findOne(user_id);
+      Object.assign(user_details, { is_seller: true });
+      await this.userRepository.save(user_details);
+      return await this.productRepository.save(product);
     } catch (error) {
       winstonLogger.error('error \n %s', error);
     }

@@ -11,7 +11,7 @@ export class Product extends BaseModel {
   @Column({ nullable: true })
   product_image: Image;
 
-  @Column({ nullable: true })
+  @Column()
   description: string;
 
   @Column('decimal', { precision: 12, scale: 2 })
@@ -20,7 +20,7 @@ export class Product extends BaseModel {
   @Column('decimal', { precision: 12, scale: 2, default: 0 })
   discount: number;
 
-  @Column()
+  @Column({ default: 0 })
   quantity_in_stock: number;
 
   @Column({ default: false })

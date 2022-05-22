@@ -1,8 +1,18 @@
-import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
 import { AdminGuard } from 'src/guards/admin.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { User } from '../users/entities/user.entity';
 import { CreateProductDTO } from './dtos/product/create-product.dto';
 import { GetProductDTO } from './dtos/product/get-product.dto';
 import { UpdateProductDTO } from './dtos/product/update-product.dto';
@@ -10,20 +20,25 @@ import { Product } from './entities/product.entity';
 import { ProductService } from './services/product.service';
 
 @Controller('product')
+@Serialize(GetProductDTO)
 export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Post('/create-product')
   @UseGuards(AuthGuard)
-  async createProduct(createProductDTO: CreateProductDTO): Promise<Product> {
-    const product = await this.productService.createProduct(createProductDTO);
-    return product;
+  async createProduct(
+    @Body()
+    body: CreateProductDTO,
+    @CurrentUser() user: User,
+  ): Promise<Product> {
+    return await this.productService.createProduct(body, user);
   }
 
-  @Get('/preview-product')
-  @Serialize(GetProductDTO)
-  async previewProduct(@Param() product_id: string): Promise<Product> {
-    return this.productService.getAProduct(product_id);
+  @Get('/preview-product/:product_id')
+  async previewProduct(
+    @Param('product_id') product_id: string,
+  ): Promise<Product> {
+    return await this.productService.getAProduct(product_id);
   }
 
   @Get('/products')
@@ -42,12 +57,12 @@ export class ProductController {
     @Param('product_id') product_id: string,
     @Query() updates: UpdateProductDTO,
   ) {
-    return this.productService.updateProduct(product_id, updates);
+    return await this.productService.updateProduct(product_id, updates);
   }
 
   @Get('/remove-product')
   @UseGuards(AdminGuard)
   async removeProduct(@Param('product_id') product_id: string) {
-    return this.productService.deleteProduct(product_id);
+    return await this.productService.deleteProduct(product_id);
   }
 }
