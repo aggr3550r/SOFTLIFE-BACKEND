@@ -1,13 +1,47 @@
+#### PRODUCT ROUTES ###
+
 ### Create A Product
 POST http://localhost:8086/product/create-product
 content-type: application/json
 
 {
-    "name": "T-Shirt",
-    "description": "Yellow T-Shirt",
-    "price": 25.00,
+    "name": "Wristband",
+    "description": "Black Medium Wristband",
+    "price": 15.00,
+    "discount": 10.00,
     "quantity_in_stock": 2
 }
 
+
 ### Preview A Product
-GET http://localhost:8086/product/preview-product/3519d78a-6fa0-4182-93d2-42ac0c44d8f8
+GET http://localhost:8086/product/preview-product/1d1daa63-8eb4-440e-a783-ad008279ddd3
+
+
+### Get All Products
+GET http://localhost:8086/product/products?page=1&take=4
+
+
+### Update A Product
+PATCH http://localhost:8086/product/update-product/?product_id=b22ad8ab-a7d8-4b41-973a-79d2bbcf0ecf
+content-type: application/json
+
+{
+    "name": "Backpack",
+    "description": "Black Leather Backpack",
+    "discount": 10.00
+}
+
+
+### Delete A Product
+DELETE http://localhost:8086/product/remove-product?product_id=1d1daa63-8eb4-440e-a783-ad008279ddd3
+
+
+
+
+
+
+### CART ROUTES ###
+
+### Create A New Empty Cart
+POST http://localhost:8086/cart/create
+content-type: application/json

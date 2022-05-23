@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   Max,
+  MaxLength,
 } from 'class-validator';
 import { Image } from 'src/types/image.type';
 
@@ -17,7 +18,7 @@ export class UpdateProductDTO {
 
   @IsOptional()
   @IsString()
-  @Max(300)
+  @MaxLength(300)
   description: string;
 
   @IsOptional()

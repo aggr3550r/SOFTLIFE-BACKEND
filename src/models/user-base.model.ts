@@ -1,11 +1,10 @@
-import { BaseModel } from "./base.model";
-import { Column } from "typeorm";
+import { BaseModel } from './base.model';
+import { Column } from 'typeorm';
 
 export class UserBaseModel extends BaseModel {
-     @Column({default: true})
-    active: boolean;
-    
-    @Column({ default: false})
-    admin: boolean;
+  @Column({ default: true })
+  active: boolean;
 
+  @Column({ default: false })
+  admin: boolean;
 }

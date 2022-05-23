@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PageDTO } from 'src/dtos/page.dto';
 import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
@@ -37,7 +37,10 @@ export class ProductService {
 
   async getAProduct(product_id: string): Promise<Product> {
     try {
-      const product = this.productRepository.findOne(product_id);
+      const product = await this.productRepository.findOne(product_id);
+      if (!product) {
+        throw new NotFoundException('Product Not Found');
+      }
       return product;
     } catch (error) {
       winstonLogger.error('error \n %s', error);
@@ -84,6 +87,21 @@ export class ProductService {
     try {
       const product = await this.productRepository.findOne(product_id);
       return this.productRepository.remove(product);
+    } catch (error) {
+      winstonLogger.error('error \n %s', error);
+    }
+  }
+
+  async calculateTotalCost(items: Product[]): Promise<number> {
+    try {
+      let total_cost = 0;
+      items.forEach((item: Product) => {
+        const price = item.price,
+          discount = item.discount / 100;
+        let actual_cost = price - price * discount;
+        total_cost += actual_cost;
+      });
+      return total_cost;
     } catch (error) {
       winstonLogger.error('error \n %s', error);
     }

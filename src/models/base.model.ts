@@ -1,5 +1,8 @@
+import { winstonLogger } from 'src/utils/winston';
 import {
-  Column,
+  AfterInsert,
+  AfterUpdate,
+  AfterRemove,
   CreateDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -14,4 +17,19 @@ export abstract class BaseModel {
 
   @UpdateDateColumn()
   updated_at?: Date;
+
+  @AfterInsert()
+  logInsert() {
+    winstonLogger.info('Inserted a record with an ID of ', this.id);
+  }
+
+  @AfterUpdate()
+  logUpdate() {
+    winstonLogger.info('Updated a record with an ID of ', this.id);
+  }
+
+  @AfterRemove()
+  logRemove() {
+    winstonLogger.info('Removed a record with an ID of', this.id);
+  }
 }

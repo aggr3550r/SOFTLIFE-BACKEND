@@ -34,5 +34,10 @@ export class GetProductDTO {
   price: number;
 
   @Expose()
+  @IsOptional()
+  @IsNumber()
+  discount: number;
+
+  @Expose()
   quantity_in_stock: number;
 }

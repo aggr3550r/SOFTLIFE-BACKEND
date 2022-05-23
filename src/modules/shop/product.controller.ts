@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -48,21 +50,25 @@ export class ProductController {
     const paginated_products = await this.productService.getProducts(
       page_options_dto,
     );
+    console.log(paginated_products.meta);
     return paginated_products.data;
   }
 
-  @Get('/update-product')
+  @Patch('/update-product')
   @UseGuards(AdminGuard)
   async updateProduct(
-    @Param('product_id') product_id: string,
-    @Query() updates: UpdateProductDTO,
-  ) {
+    @Body() updates: UpdateProductDTO,
+    @Query('product_id') product_id: string,
+  ): Promise<Product> {
+    console.log(updates);
     return await this.productService.updateProduct(product_id, updates);
   }
 
-  @Get('/remove-product')
+  @Delete('/remove-product')
   @UseGuards(AdminGuard)
-  async removeProduct(@Param('product_id') product_id: string) {
+  async removeProduct(
+    @Query('product_id') product_id: string,
+  ): Promise<Product> {
     return await this.productService.deleteProduct(product_id);
   }
 }

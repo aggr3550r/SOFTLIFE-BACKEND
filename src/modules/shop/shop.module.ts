@@ -6,6 +6,12 @@ import { ProductController } from './product.controller';
 import { ProductService } from './services/product.service';
 import { User } from '../users/entities/user.entity';
 import { UserRepository } from '../users/repository/user.repository';
+import { CartRepository } from './repository/cart.repository';
+import { CartController } from './cart.controller';
+import { CartService } from './services/cart.service';
+import { Cart } from './entities/cart.entity';
+import { CartItem } from './entities/cart-item.entity';
+import { CartItemRepository } from './repository/cart-item.repository';
 
 @Module({
   imports: [
@@ -14,10 +20,20 @@ import { UserRepository } from '../users/repository/user.repository';
       ProductRepository,
       User,
       UserRepository,
+      Cart,
+      CartRepository,
+      CartItem,
+      CartItemRepository,
     ]),
   ],
-  exports: [TypeOrmModule.forFeature([ProductRepository])],
-  controllers: [ProductController],
-  providers: [ProductService],
+  exports: [
+    TypeOrmModule.forFeature([
+      ProductRepository,
+      CartRepository,
+      CartItemRepository,
+    ]),
+  ],
+  controllers: [ProductController, CartController],
+  providers: [ProductService, CartService],
 })
 export class ShopModule {}
