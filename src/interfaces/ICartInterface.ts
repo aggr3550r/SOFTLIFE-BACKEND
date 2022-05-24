@@ -6,4 +6,5 @@ export interface ICartInterface {
   addItemToExistingCart(item: Product, cart_id: string): Cart;
   createCartAndAddItem(item: Product): Cart;
   removeItemFromCart(item: Product, cart_id: string): Cart;
+  processCartItems(cart_id: string);
 }
