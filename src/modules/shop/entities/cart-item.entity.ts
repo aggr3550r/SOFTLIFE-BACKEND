@@ -5,7 +5,7 @@ import { Product } from './product.entity';
 @Entity()
 export class CartItem extends Product {
   @Column()
-  quantity: number;
+  quantity_in_cart: number;
 
   @Column('decimal', { precision: 12, scale: 2 })
   price: number;
