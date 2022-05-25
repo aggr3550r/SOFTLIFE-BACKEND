@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/modules/users/entities/user.entity';
+import { ICartArgsSetup } from 'src/interfaces/ICartArgsSetup';
 import { winstonLogger } from 'src/utils/winston';
-import { CreateCartDTO } from '../dtos/cart/create-cart.dto';
 import { ProcessedCartDTO } from '../dtos/cart/processed-cart.dto';
 import { CartItem } from '../entities/cart-item.entity';
 import { Cart } from '../entities/cart.entity';
@@ -21,16 +20,15 @@ export class CartService {
     private cartItemService: CartItemService,
   ) {}
 
-  async getACart(createCartDto: CreateCartDTO, user: User) {
+  async getACart(args: ICartArgsSetup): Promise<Cart> {
     try {
-      const id = user.id;
-      const existing_cart = await this.findCartByOwnerId(id);
+      const existing_cart = await this.findCartByOwnerId(args);
 
       if (existing_cart && !existing_cart.is_resolved) {
         return await this.cartRepository.findOne(existing_cart);
       } else {
-        const cart = this.cartRepository.create(createCartDto);
-        cart.owner = user;
+        const cart = this.cartRepository.create(args.create_cart_dto);
+        cart.owner = args.user;
         return await this.cartRepository.save(cart);
       }
     } catch (error) {
@@ -38,17 +36,13 @@ export class CartService {
     }
   }
 
-  async addItemToCart(
-    product_id: string,
-    user: User,
-    createCartDto?: CreateCartDTO,
-  ) {
+  async addItemToCart(args: ICartArgsSetup): Promise<Cart> {
     try {
-      const product = await this.productRepository.findOne(product_id);
-      let cart = await this.findCartByOwnerId(user.id);
+      const product = await this.productRepository.findOne(args.product_id);
+      let cart = await this.findCartByOwnerId(args);
 
       if (!cart) {
-        cart = await this.getACart(createCartDto, user);
+        cart = await this.getACart(args);
       }
       if (!cart.is_resolved) {
         let cart_item = await this.cartItemService.createCartItem(
@@ -63,46 +57,143 @@ export class CartService {
     }
   }
 
-  async removeItemFromCart(product_id: string, user: User) {
+  async removeItemFromCart(args: ICartArgsSetup): Promise<Cart> {
     try {
-      // go to the cart_item repository
-      // find the cart_item with a product_id that matches the parameter passed
-      const cart_item = await this.cartItemRepository.findOne({
+      /* Removes item from cart_item repository
+       */
+      const cart = await this.findCartByOwnerId(args);
+      const product_id = args.product_id;
+      const cart_id = cart.id;
+      const original_cart_item = await this.cartItemRepository.findOne({
         where: {
+          cart: cart_id,
           product: product_id,
         },
       });
-      // change the is_in_cart flag to false
-      Object.assign(cart_item, { is_in_cart: false });
-      // save the cart item back into its repository to persist the above updates
-      await this.cartItemRepository.save(cart_item);
-      // -------------------------------------------
-      // perhaps repeat the above process for the corresponding cart_item record in the cart repository
-      const cart = await this.findCartByOwnerId(user.id);
-    } catch (error) {}
+
+      Object.assign(original_cart_item, { is_in_cart: false });
+      await this.cartItemRepository.save(original_cart_item);
+
+      // --------------------------------------------------
+
+      /* Removes item from cart repository
+       */
+      const backup_cart_item = cart.cart_items.find((obj) => {
+        obj.id === original_cart_item.id;
+      });
+
+      Object.assign(backup_cart_item, { is_in_cart: false });
+      return await this.cartRepository.save(cart);
+    } catch (error) {
+      winstonLogger.error('error \n %s', error);
+    }
   }
-  // async createCartAndAddItem(cart_item_id: string): Promise<Cart> {}
 
-  // async removeItemFromCart(
-  //   cart_item_id: string,
-  //   cart_id: string,
-  // ): Promise<Cart> {}
+  async updateCartItemQuantity(
+    args: ICartArgsSetup,
+    new_quantity: number,
+  ): Promise<Cart> {
+    try {
+      /* Updates item_quantity in cart_item repository
+       */
+      const cart = await this.findCartByOwnerId(args);
+      const product_id = args.product_id;
+      const cart_id = cart.id;
+      const original_cart_item = await this.cartItemRepository.findOne({
+        where: {
+          cart: cart_id,
+          product: product_id,
+        },
+      });
 
-  // async emptyCart(cart_id: string): Promise<Cart> {}
+      Object.assign(original_cart_item, { quantity: new_quantity });
+      await this.cartItemRepository.save(original_cart_item);
 
-  // async dropCart(cart_id: string): Promise<void> {}
+      // ---------------------------------------------------
+
+      /* Updates item_quantity in cart repository
+       */
+      const backup_cart_item = cart.cart_items.find((obj) => {
+        obj.id === original_cart_item.id;
+      });
+
+      Object.assign(backup_cart_item, { quantity: new_quantity });
+      return await this.cartRepository.save(cart);
+    } catch (error) {
+      winstonLogger.error('error \n %s', error);
+    }
+  }
+
+  async fetchAllCartItemsInCart(args: ICartArgsSetup): Promise<CartItem[]> {
+    try {
+      const cart = await this.findCartByOwnerId(args),
+        cart_id = cart.id;
+      const cart_items = await this.cartItemRepository.find({
+        where: {
+          cart: cart_id,
+        },
+      });
+      return cart_items;
+    } catch (error) {
+      winstonLogger.error('error \n %s', error);
+    }
+  }
+
+  async emptyCart(args: ICartArgsSetup): Promise<Cart> {
+    try {
+      /* Removes original cart_items from cart_item_repository
+       */
+      const cart = await this.findCartByOwnerId(args),
+        cart_id = cart.id;
+      const original_cart_items = await this.cartItemRepository.find({
+        where: {
+          cart: cart_id,
+        },
+      });
+      original_cart_items.forEach((cart_item) => {
+        cart_item.is_in_cart = false;
+      });
+      await this.cartItemRepository.save(original_cart_items);
+
+      // ---------------------------------------------------
+
+      /* Removes backup cart_items from cart_repository
+       */
+      const backup_cart_items = cart.cart_items;
+      backup_cart_items.forEach((cart_item) => {
+        cart_item.is_in_cart = false;
+      });
+      return await this.cartRepository.save(cart);
+    } catch (error) {
+      winstonLogger.error('error \n %s', error);
+    }
+  }
+
+  async dropCart(args: ICartArgsSetup): Promise<void> {
+    const cart = await this.findCartByOwnerId(args);
+    cart.is_in_use = false;
+    await this.cartRepository.save(cart);
+    return null;
+  }
 
   // async checkoutCart(cart_id: string): Promise<ProcessedCartDTO> {}
 
-  async findCartByOwnerId(id: string) {
-    if (!id) {
+  async findCartByOwnerId(args: ICartArgsSetup): Promise<Cart> {
+    const owner_id = args.user.id;
+    if (!owner_id) {
       return null;
     }
     const cart = await this.cartRepository.findOne({
       where: {
-        owner: id,
+        owner: owner_id,
+        is_resolved: false,
+        is_in_use: true,
       },
     });
+
+    if (!cart) {
+      throw new NotFoundException('No unresolved cart found for this user');
+    }
     return cart;
   }
 }
