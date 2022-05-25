@@ -65,6 +65,20 @@ export class CartService {
 
   async removeItemFromCart(product_id: string, user: User) {
     try {
+      // go to the cart_item repository
+      // find the cart_item with a product_id that matches the parameter passed
+      const cart_item = await this.cartItemRepository.findOne({
+        where: {
+          product: product_id,
+        },
+      });
+      // change the is_in_cart flag to false
+      Object.assign(cart_item, { is_in_cart: false });
+      // save the cart item back into its repository to persist the above updates
+      await this.cartItemRepository.save(cart_item);
+      // -------------------------------------------
+      // perhaps repeat the above process for the corresponding cart_item record in the cart repository
+      const cart = await this.findCartByOwnerId(user.id);
     } catch (error) {}
   }
   // async createCartAndAddItem(cart_item_id: string): Promise<Cart> {}

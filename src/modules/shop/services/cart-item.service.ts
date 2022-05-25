@@ -16,6 +16,8 @@ export class CartItemService {
     private productRepository: ProductRepository,
   ) {}
 
+  /* Conceptually, a cart_item is an offspring of a product whilst it is in a cart's womb.
+   */
   async createCartItem(product: Product, cart: Cart): Promise<CartItem> {
     try {
       const cart_item = this.cartItemRepository.create(product);
