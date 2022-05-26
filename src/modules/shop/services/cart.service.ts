@@ -176,24 +176,47 @@ export class CartService {
     return null;
   }
 
-  // async checkoutCart(cart_id: string): Promise<ProcessedCartDTO> {}
+  async calculateCostOfCart(args: ICartArgsSetup) {
+    try {
+      const cart_items = await this.fetchAllCartItemsInCart(args);
+      let total_cost = 0.0;
+      cart_items.forEach((item) => {
+        const item_price = item.price,
+          item_discount = item.discount / 100,
+          item_quantity = item.quantity_in_cart;
+        const price_per_item = item_price - item_price * item_discount;
+        const gross = item_quantity * price_per_item;
+        total_cost += gross;
+      });
+      return total_cost;
+    } catch (error) {
+      winstonLogger.error('error \n %s', error);
+    }
+  }
 
   async findCartByOwnerId(args: ICartArgsSetup): Promise<Cart> {
-    const owner_id = args.user.id;
-    if (!owner_id) {
-      return null;
-    }
-    const cart = await this.cartRepository.findOne({
-      where: {
-        owner: owner_id,
-        is_resolved: false,
-        is_in_use: true,
-      },
-    });
+    try {
+      const owner_id = args.user.id;
+      if (!owner_id) {
+        return null;
+      }
+      const cart = await this.cartRepository.findOne({
+        where: {
+          owner: owner_id,
+          is_resolved: false,
+          is_in_use: true,
+        },
+      });
 
-    if (!cart) {
-      throw new NotFoundException('No unresolved cart found for this user');
+      if (!cart) {
+        throw new NotFoundException('No unresolved cart found for this user');
+      }
+      return cart;
+    } catch (error) {
+      winstonLogger.error(
+        'Error while trying to find unresolved cart \n %s',
+        error,
+      );
     }
-    return cart;
   }
 }
