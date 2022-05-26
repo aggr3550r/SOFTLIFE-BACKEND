@@ -31,7 +31,7 @@ export class ProductService {
       await this.userRepository.save(user_details);
       return await this.productRepository.save(product);
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('createProduct() error \n %s', error);
     }
   }
 
@@ -43,7 +43,7 @@ export class ProductService {
       }
       return product;
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('getAProduct() error \n %s', error);
     }
   }
 
@@ -66,7 +66,7 @@ export class ProductService {
 
       return new PageDTO(items, page_meta_dto);
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('getProducts() error \n %s', error);
     }
   }
 
@@ -79,7 +79,7 @@ export class ProductService {
       Object.assign(product, body);
       return this.productRepository.save(product);
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('updateProduct() error \n %s', error);
     }
   }
 
@@ -88,22 +88,7 @@ export class ProductService {
       const product = await this.productRepository.findOne(product_id);
       return this.productRepository.remove(product);
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
-    }
-  }
-
-  async calculateTotalCost(items: Product[]): Promise<number> {
-    try {
-      let total_cost = 0;
-      items.forEach((item: Product) => {
-        const price = item.price,
-          discount = item.discount / 100;
-        let actual_cost = price - price * discount;
-        total_cost += actual_cost;
-      });
-      return total_cost;
-    } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('deleteProduct() error \n %s', error);
     }
   }
 }

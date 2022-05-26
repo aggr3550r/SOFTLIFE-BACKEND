@@ -16,11 +16,7 @@ export class ContactController {
   @Post()
   @UseGuards(AuthGuard)
   sendMessage(@Body() body: CreateMessageDTO): Promise<Message> {
-    const message = this.contactService.create(
-      body.name,
-      body.email,
-      body.message,
-    );
+    const message = this.contactService.createMessage(body);
     return message;
   }
 
@@ -32,10 +28,7 @@ export class ContactController {
 
   @Post('reply-message/:id')
   @UseGuards(AdminGuard)
-  replyMessage(
-    @Param('id') id: string,
-    @Body() body: UpdateMessageDTO,
-  ): Promise<Message> {
+  replyMessage(@Param('id') id: string, @Body() body: UpdateMessageDTO) {
     return this.contactService.update(parseInt(id), body);
   }
 

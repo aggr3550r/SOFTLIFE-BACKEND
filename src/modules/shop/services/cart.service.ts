@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ICartArgsSetup } from 'src/interfaces/ICartArgsSetup';
+import { ResponseModel } from 'src/models/response.model';
 import { winstonLogger } from 'src/utils/winston';
 import { ProcessedCartDTO } from '../dtos/cart/processed-cart.dto';
 import { CartItem } from '../entities/cart-item.entity';
@@ -32,7 +33,7 @@ export class CartService {
         return await this.cartRepository.save(cart);
       }
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('getACart() error \n %s', error);
     }
   }
 
@@ -53,7 +54,7 @@ export class CartService {
       }
       return this.cartRepository.save(cart);
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('addItemToCart() error \n %s', error);
     }
   }
 
@@ -85,7 +86,7 @@ export class CartService {
       Object.assign(backup_cart_item, { is_in_cart: false });
       return await this.cartRepository.save(cart);
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('removeItemFromCart() error \n %s', error);
     }
   }
 
@@ -120,7 +121,7 @@ export class CartService {
       Object.assign(backup_cart_item, { quantity: new_quantity });
       return await this.cartRepository.save(cart);
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('updateCartItemQuantity() error \n %s', error);
     }
   }
 
@@ -135,7 +136,7 @@ export class CartService {
       });
       return cart_items;
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('fetchAllCartItemsInCart() error \n %s', error);
     }
   }
 

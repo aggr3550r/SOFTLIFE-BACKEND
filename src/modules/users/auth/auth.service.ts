@@ -7,6 +7,8 @@ import { UsersService } from '../users.service';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
 import { CreateUserDTO } from '../dtos/create-user.dto';
+import { winstonLogger } from 'src/utils/winston';
+import { User } from '../entities/user.entity';
 
 const scrypt = promisify(_scrypt);
 
@@ -14,48 +16,44 @@ const scrypt = promisify(_scrypt);
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  async signup(createUserDto: CreateUserDTO) {
-    //SEE IF EMAIL IS IN USE
-    const users = await this.usersService.find(createUserDto.email);
-    if (users.length) {
-      throw new BadRequestException('Email in use!');
+  async signup(create_user_dto: CreateUserDTO): Promise<User> {
+    try {
+      const users = await this.usersService.find(create_user_dto.email);
+      if (users.length) {
+        throw new BadRequestException('Email in use!');
+      }
+      const salt = randomBytes(8).toString('hex');
+      const hash = (await scrypt(create_user_dto.password, salt, 32)) as Buffer;
+
+      const password = salt + '.' + hash.toString('hex');
+
+      create_user_dto.password = password;
+      const user = await this.usersService.create(create_user_dto);
+      return user;
+    } catch (error) {
+      winstonLogger.error('User Signup error \n %s', error);
     }
-
-    //HASH USER PASSWORD
-
-    //Generate a salt
-    const salt = randomBytes(8).toString('hex');
-
-    //Hash the salt and the password together
-    const hash = (await scrypt(createUserDto.password, salt, 32)) as Buffer;
-
-    //Join the hashed result and the salt together
-    const password = salt + '.' + hash.toString('hex');
-
-    createUserDto.password = password;
-
-    //CREATE AND SAVE NEW USER
-    const user = await this.usersService.create(createUserDto);
-
-    //RETURN SAVED USER
-    return user;
   }
 
   async signin(email: string, password: string) {
-    const [user] = await this.usersService.find(email);
+    try {
+      const [user] = await this.usersService.find(email);
 
-    if (!user) {
-      throw new NotFoundException('User not found!');
+      if (!user) {
+        throw new NotFoundException('User not found!');
+      }
+
+      const [salt, storedHash] = user.password.split('.');
+
+      const hash = (await scrypt(password, salt, 32)) as Buffer;
+
+      if (storedHash !== hash.toString('hex')) {
+        throw new BadRequestException('Invalid email or password!');
+      }
+
+      return user;
+    } catch (error) {
+      winstonLogger.error('User Signin error \n %s', error);
     }
-
-    const [salt, storedHash] = user.password.split('.');
-
-    const hash = (await scrypt(password, salt, 32)) as Buffer;
-
-    if (storedHash !== hash.toString('hex')) {
-      throw new BadRequestException('Invalid email or password!');
-    }
-
-    return user;
   }
 }

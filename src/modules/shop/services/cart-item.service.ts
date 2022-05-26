@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SoftlifeResponseStatus } from 'src/enums/softife.response.enum';
+import { ResponseModel } from 'src/models/response.model';
 import { winstonLogger } from 'src/utils/winston';
 import { CartItem } from '../entities/cart-item.entity';
 import { Cart } from '../entities/cart.entity';
@@ -28,7 +30,7 @@ export class CartItemService {
       this.productRepository.save(product);
       return this.cartItemRepository.save(cart_item);
     } catch (error) {
-      winstonLogger.error('error \n %s', error);
+      winstonLogger.error('Create_Cart_Item error \n %s', error);
     }
   }
 

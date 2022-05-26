@@ -15,18 +15,16 @@ export class UsersService {
   ) {}
 
   async create(create_user_dto: CreateUserDTO): Promise<User> {
-    if (!create_user_dto.email || !create_user_dto.password) {
-      return null;
-    }
     const user = this.userRepository.create(create_user_dto);
     return await this.userRepository.save(user);
   }
 
   async find(email: string): Promise<User[]> {
-    if (!email) {
-      return null;
-    }
     return await this.userRepository.find({ email });
+  }
+
+  async findOne(id: string) {
+    return await this.userRepository.findOne(id);
   }
 
   async findEmails(page_options_dto: PageOptionsDTO) {
@@ -50,28 +48,18 @@ export class UsersService {
       winstonLogger.error('error \n %s', error);
     }
   }
-
-  async findOne(id: string): Promise<User> {
-    if (!id) {
-      return null;
-    }
-    return await this.userRepository.findOne(id);
-  }
-
   async update(id: string, body: UpdateUserDTO): Promise<User> {
-    const user = await this.userRepository.findOne(id);
-    if (!user) {
-      throw new NotFoundException('User not found');
+    try {
+      const user = await this.userRepository.findOne(id);
+      Object.assign(user, body);
+      return this.userRepository.save(user);
+    } catch (error) {
+      winstonLogger.error('error \n %s', error);
     }
-    Object.assign(user, body);
-    return this.userRepository.save(user);
   }
 
   async remove(id: string): Promise<User> {
     const user = await this.userRepository.findOne(id);
-    if (!user) {
-      throw new NotFoundException('User does not exist');
-    }
     return this.userRepository.remove(user);
   }
 }

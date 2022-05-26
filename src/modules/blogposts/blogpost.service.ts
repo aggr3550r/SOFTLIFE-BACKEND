@@ -17,8 +17,8 @@ export class BlogPostService {
     private blogpostRepository: BlogPostRepository,
   ) {}
 
-  create(blogPostDto: CreateBlogPostDTO, user: User) {
-    const blogpost = this.blogpostRepository.create(blogPostDto);
+  create(blog_post_dto: CreateBlogPostDTO, user: User) {
+    const blogpost = this.blogpostRepository.create(blog_post_dto);
     blogpost.creator = user;
     return this.blogpostRepository.save(blogpost);
   }

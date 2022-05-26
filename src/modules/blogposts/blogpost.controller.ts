@@ -7,7 +7,7 @@ import {
   Param,
   Get,
   NotFoundException,
-  Query
+  Query,
 } from '@nestjs/common';
 import { AdminGuard } from 'src/guards/admin.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
@@ -37,16 +37,6 @@ export class BlogPostController {
   approvePost(@Param('id') id: string, @Body() body: ApproveBlogPostDTO) {
     return this.blogPostService.changeApprovalStatus(id, body.approved);
   }
-
-  // @Get('/approved')
-  // async getAllApprovedPosts() {
-  //   const blogposts = await this.getAllPosts();
-  //   const approved_posts = [];
-  //   blogposts.forEach((blogpost) => {
-  //     if (blogpost.approved) approved_posts.push(blogpost);
-  //   });
-  //   return approved_posts;
-  // }
 
   @Get()
   async getBlogPosts(@Query() page_options_dto: PageOptionsDTO) {
