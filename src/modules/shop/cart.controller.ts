@@ -11,9 +11,4 @@ import { CartService } from './services/cart.service';
 @Serialize(CartDTO)
 export class CartController {
   constructor(private cartService: CartService) {}
-
-  @Post('/create')
-  async createCart(@Body() body: CreateCartDTO, @CurrentUser() user: User) {
-    return await this.cartService.getACart(body, user);
-  }
 }
