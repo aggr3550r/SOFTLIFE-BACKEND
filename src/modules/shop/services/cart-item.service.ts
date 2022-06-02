@@ -34,8 +34,6 @@ export class CartItemService {
     }
   }
 
-  async getCartItems() {}
-
   async updateCartItem() {}
 
   async removeCartItem() {}
