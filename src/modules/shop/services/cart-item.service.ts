@@ -7,6 +7,7 @@ import { CartItem } from '../entities/cart-item.entity';
 import { Cart } from '../entities/cart.entity';
 import { Product } from '../entities/product.entity';
 import { CartItemRepository } from '../repository/cart-item.repository';
+import { CartRepository } from '../repository/cart.repository';
 import { ProductRepository } from '../repository/product.repository';
 
 @Injectable()
@@ -16,6 +17,7 @@ export class CartItemService {
     private cartItemRepository: CartItemRepository,
     @InjectRepository(ProductRepository)
     private productRepository: ProductRepository,
+    @InjectRepository(CartRepository) private cartRepository: CartRepository,
   ) {}
 
   /* Conceptually, a cart_item is an offspring of a product whilst it is in a cart's womb.

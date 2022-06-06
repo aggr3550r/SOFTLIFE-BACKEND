@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ICartConfig } from 'src/interfaces/ICartConfig';
 import { ResponseModel } from 'src/models/response.model';
 import { winstonLogger } from 'src/utils/winston';
+import { FindManyOptions } from 'typeorm';
 import { ProcessedCartDTO } from '../dtos/cart/processed-cart.dto';
 import { CartItem } from '../entities/cart-item.entity';
 import { Cart } from '../entities/cart.entity';
@@ -29,7 +30,7 @@ export class CartService {
     try {
       const existing_cart = await this.findCartByOwnerId(config);
 
-      if (existing_cart && !existing_cart.is_resolved) {
+      if (existing_cart) {
         return await this.cartRepository.findOne(existing_cart);
       } else {
         const cart = this.cartRepository.create(config.create_cart_dto);
@@ -200,18 +201,24 @@ export class CartService {
     }
   }
 
+  /**
+    This is the most crucial method in this service.
+     It is leveraged by just about every other method in
+     here to find the cart that is currently in session
+     for the user that is currently in session.
+   **/
   async findCartByOwnerId(config: ICartConfig): Promise<Cart> {
     try {
+      const where: FindManyOptions<Cart>['where'] = {};
       const owner_id = config.user.id;
       if (!owner_id) {
         return null;
       }
+      where.owner = owner_id;
+      where.is_resolved = false;
+      where.is_in_use = true;
       const cart = await this.cartRepository.findOne({
-        where: {
-          owner: owner_id,
-          is_resolved: false,
-          is_in_use: true,
-        },
+        where,
       });
       return cart;
     } catch (error) {

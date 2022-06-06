@@ -25,15 +25,16 @@ import { CartService } from './services/cart.service';
 @UseGuards(AuthGuard)
 export class CartController {
   constructor(private cartService: CartService) {}
-  @Post('add-to-cart')
+  @Post('add-to-cart/:product_id')
   async addItemToCart(
     @CurrentUser() user: User,
     @Param('product') product_id: string,
-    @Query('create_cart') create_cart_dto?: CreateCartDTO,
+    // @Query('create-cart') create_cart_dto?: CreateCartDTO,
   ): Promise<Cart> {
     let config: ICartConfig;
+    console.log(user);
     config.user = user;
-    config.create_cart_dto = create_cart_dto;
+    // config.create_cart_dto = create_cart_dto;
     config.product_id = product_id;
     return await this.cartService.addItemToCart(config);
   }

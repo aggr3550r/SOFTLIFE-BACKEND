@@ -43,5 +43,5 @@ DELETE http://localhost:8086/product/remove-product?product_id=1d1daa63-8eb4-440
 ### CART ROUTES ###
 
 ### Create A New Empty Cart
-POST http://localhost:8086/cart/create
+POST http://localhost:8086/cart/add-to-cart/7620a769-ad35-4727-ac01-908c964a3959
 content-type: application/json

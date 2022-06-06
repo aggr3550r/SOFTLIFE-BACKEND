@@ -14,7 +14,7 @@ POST http://localhost:8086/auth/signin
 content-type: application/json
 
 {
-    "email": "jephtah@kippa.africa",
+    "email": "victor@kippa.africa",
     "password": "password"
 }
 

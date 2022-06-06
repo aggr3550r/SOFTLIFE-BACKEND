@@ -12,6 +12,7 @@ import { CartService } from './services/cart.service';
 import { Cart } from './entities/cart.entity';
 import { CartItem } from './entities/cart-item.entity';
 import { CartItemRepository } from './repository/cart-item.repository';
+import { CartItemService } from './services/cart-item.service';
 
 @Module({
   imports: [
@@ -34,6 +35,6 @@ import { CartItemRepository } from './repository/cart-item.repository';
     ]),
   ],
   controllers: [ProductController, CartController],
-  providers: [ProductService, CartService],
+  providers: [ProductService, CartService, CartItemService],
 })
 export class ShopModule {}
