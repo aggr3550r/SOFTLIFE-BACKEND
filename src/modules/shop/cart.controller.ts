@@ -28,14 +28,13 @@ export class CartController {
   @Post('add-to-cart/:product_id')
   async addItemToCart(
     @CurrentUser() user: User,
-    @Param('product') product_id: string,
-    // @Query('create-cart') create_cart_dto?: CreateCartDTO,
+    @Param('product_id') product_id: string,
   ): Promise<Cart> {
-    let config: ICartConfig;
+    let config: ICartConfig = {};
     console.log(user);
-    config.user = user;
-    // config.create_cart_dto = create_cart_dto;
+    config.user_id = user.id;
     config.product_id = product_id;
+    console.log(config);
     return await this.cartService.addItemToCart(config);
   }
 
@@ -45,7 +44,7 @@ export class CartController {
     @Query('product') product_id: string,
   ): Promise<Cart> {
     let config: ICartConfig;
-    config.user = user;
+    config.user_id = user.id;
     config.product_id = product_id;
     return await this.cartService.removeItemFromCart(config);
   }
@@ -57,7 +56,7 @@ export class CartController {
   ): Promise<Cart> {
     let new_quantity = update_cart_item_dto.quantity;
     let config: ICartConfig;
-    config.user = user;
+    config.user_id = user.id;
     config.product_id = update_cart_item_dto.product;
     return await this.cartService.updateCartItemQuantity(config, new_quantity);
   }
@@ -67,28 +66,28 @@ export class CartController {
     @CurrentUser() user: User,
   ): Promise<CartItem[]> {
     let config: ICartConfig;
-    config.user = user;
+    config.user_id = user.id;
     return await this.cartService.fetchAllCartItemsInCart(config);
   }
 
   @Patch('empty-cart')
   async emptyCart(@CurrentUser() user: User): Promise<Cart> {
     let config: ICartConfig;
-    config.user = user;
+    config.user_id = user.id;
     return await this.cartService.emptyCart(config);
   }
 
   @Patch('drop-cart')
   async dropCart(@CurrentUser() user: User): Promise<void> {
     let config: ICartConfig;
-    config.user = user;
+    config.user_id = user.id;
     return await this.cartService.dropCart(config);
   }
 
   @Get('calculate-cost')
   async calculateCost(@CurrentUser() user: User): Promise<number> {
     let config: ICartConfig;
-    config.user = user;
+    config.user_id = user.id;
     return await this.cartService.calculateCostOfCart(config);
   }
 }

@@ -50,7 +50,6 @@ export class ProductController {
     const paginated_products = await this.productService.getProducts(
       page_options_dto,
     );
-    console.log(paginated_products.meta);
     return paginated_products.data;
   }
 
@@ -60,7 +59,6 @@ export class ProductController {
     @Body() updates: UpdateProductDTO,
     @Query('product_id') product_id: string,
   ): Promise<Product> {
-    console.log(updates);
     return await this.productService.updateProduct(product_id, updates);
   }
 

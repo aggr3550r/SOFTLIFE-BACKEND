@@ -4,5 +4,5 @@ import { User } from 'src/modules/users/entities/user.entity';
 export interface ICartConfig {
   product_id?: string;
   create_cart_dto?: CreateCartDTO;
-  user?: User;
+  user_id?: string;
 }

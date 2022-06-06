@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ICartConfig } from 'src/interfaces/ICartConfig';
-import { ResponseModel } from 'src/models/response.model';
+import { UserRepository } from 'src/modules/users/repository/user.repository';
 import { winstonLogger } from 'src/utils/winston';
 import { FindManyOptions } from 'typeorm';
 import { ProcessedCartDTO } from '../dtos/cart/processed-cart.dto';
@@ -19,6 +19,8 @@ export class CartService {
     @InjectRepository(ProductRepository)
     private productRepository: ProductRepository,
     @InjectRepository(CartItemRepository)
+    @InjectRepository(UserRepository)
+    private userRepository: UserRepository,
     private cartItemRepository: CartItemRepository,
     private cartItemService: CartItemService,
   ) {}
@@ -29,12 +31,12 @@ export class CartService {
   async getACart(config: ICartConfig): Promise<Cart> {
     try {
       const existing_cart = await this.findCartByOwnerId(config);
-
+      const user = await this.userRepository.findOne(config.user_id);
       if (existing_cart) {
         return await this.cartRepository.findOne(existing_cart);
       } else {
         const cart = this.cartRepository.create(config.create_cart_dto);
-        cart.owner = config.user;
+        cart.owner = user;
         return await this.cartRepository.save(cart);
       }
     } catch (error) {
@@ -46,17 +48,26 @@ export class CartService {
     try {
       const product = await this.productRepository.findOne(config.product_id);
       let cart = await this.findCartByOwnerId(config);
-
       if (!cart) {
         cart = await this.getACart(config);
       }
-      if (!cart.is_resolved) {
-        let cart_item = await this.cartItemService.createCartItem(
-          product,
-          cart,
-        );
-        cart.cart_items.push(cart_item);
+      const product_id = config.product_id,
+        cart_id = cart.id;
+      const where: FindManyOptions<CartItem>['where'] = {};
+      where.product = product_id;
+      where.cart = cart_id;
+      where.is_in_cart = true;
+      where.is_in_stock = true;
+      let cart_item = await this.cartItemRepository.findOne({
+        where,
+      });
+      if (cart_item) {
+        cart_item.quantity_in_cart += 1;
+        this.cartItemRepository.save(cart_item);
+      } else {
+        cart_item = await this.cartItemService.createCartItem(product, cart);
       }
+
       return this.cartRepository.save(cart);
     } catch (error) {
       winstonLogger.error('addItemToCart() error \n %s', error);
@@ -67,29 +78,11 @@ export class CartService {
     try {
       /* Removes item from cart_item repository
        */
-      const cart = await this.findCartByOwnerId(config);
-      const product_id = config.product_id;
-      const cart_id = cart.id;
-      const original_cart_item = await this.cartItemRepository.findOne({
-        where: {
-          cart: cart_id,
-          product: product_id,
-        },
-      });
+      const cart_item = await this.findCartItemInCart(config);
 
-      original_cart_item.is_in_cart = false;
-      await this.cartItemRepository.save(original_cart_item);
-
-      // --------------------------------------------------
-
-      /* Removes item from cart repository
-       */
-      const backup_cart_item = cart.cart_items.find((obj) => {
-        obj.id === original_cart_item.id;
-      });
-
-      backup_cart_item.is_in_cart = false;
-      return await this.cartRepository.save(cart);
+      cart_item.is_in_cart = false;
+      await this.cartItemRepository.save(cart_item);
+      return await this.cartRepository.save(cart_item.cart);
     } catch (error) {
       winstonLogger.error('removeItemFromCart() error \n %s', error);
     }
@@ -102,29 +95,11 @@ export class CartService {
     try {
       /* Updates item_quantity in cart_item repository
        */
-      const cart = await this.findCartByOwnerId(config);
-      const product_id = config.product_id;
-      const cart_id = cart.id;
-      const original_cart_item = await this.cartItemRepository.findOne({
-        where: {
-          cart: cart_id,
-          product: product_id,
-        },
-      });
+      const cart_item = await this.findCartItemInCart(config);
 
-      Object.assign(original_cart_item, { quantity_in_cart: new_quantity });
-      await this.cartItemRepository.save(original_cart_item);
-
-      // ---------------------------------------------------
-
-      /* Updates item_quantity in cart repository
-       */
-      const backup_cart_item = cart.cart_items.find((obj) => {
-        obj.id === original_cart_item.id;
-      });
-
-      Object.assign(backup_cart_item, { quantity_in_cart: new_quantity });
-      return await this.cartRepository.save(cart);
+      Object.assign(cart_item, { quantity_in_cart: new_quantity });
+      await this.cartItemRepository.save(cart_item);
+      return await this.cartRepository.save(cart_item.cart);
     } catch (error) {
       winstonLogger.error('updateCartItemQuantity() error \n %s', error);
     }
@@ -134,12 +109,10 @@ export class CartService {
     try {
       const cart = await this.findCartByOwnerId(config),
         cart_id = cart.id;
-      const cart_items = await this.cartItemRepository.find({
-        where: {
-          cart: cart_id,
-          is_in_cart: true,
-        },
-      });
+      const where: FindManyOptions<CartItem>['where'] = {};
+      where.cart = cart_id;
+      where.is_in_cart = true;
+      const cart_items = await this.cartItemRepository.find({ where });
       return cart_items;
     } catch (error) {
       winstonLogger.error('fetchAllCartItemsInCart() error \n %s', error);
@@ -152,24 +125,15 @@ export class CartService {
        */
       const cart = await this.findCartByOwnerId(config),
         cart_id = cart.id;
-      const original_cart_items = await this.cartItemRepository.find({
+      const cart_items = await this.cartItemRepository.find({
         where: {
           cart: cart_id,
         },
       });
-      original_cart_items.forEach((cart_item) => {
+      cart_items.forEach((cart_item) => {
         cart_item.is_in_cart = false;
       });
-      await this.cartItemRepository.save(original_cart_items);
-
-      // ---------------------------------------------------
-
-      /* Removes backup cart_items from cart_repository
-       */
-      const backup_cart_items = cart.cart_items;
-      backup_cart_items.forEach((cart_item) => {
-        cart_item.is_in_cart = false;
-      });
+      await this.cartItemRepository.save(cart_items);
       return await this.cartRepository.save(cart);
     } catch (error) {
       winstonLogger.error('emptyCart() error \n %s', error);
@@ -204,26 +168,44 @@ export class CartService {
   /**
     This is the most crucial method in this service.
      It is leveraged by just about every other method in
-     here to find the cart that is currently in session
+     here to find the cart that is currently in procession
      for the user that is currently in session.
    **/
   async findCartByOwnerId(config: ICartConfig): Promise<Cart> {
     try {
       const where: FindManyOptions<Cart>['where'] = {};
-      const owner_id = config.user.id;
+      const owner_id = config.user_id;
       if (!owner_id) {
         return null;
       }
       where.owner = owner_id;
       where.is_resolved = false;
       where.is_in_use = true;
-      const cart = await this.cartRepository.findOne({
-        where,
-      });
+      const cart = await this.cartRepository.findOne({ where });
       return cart;
     } catch (error) {
       winstonLogger.error(
-        'Error while trying to find unresolved cart for this user \n %s',
+        'Error while trying to find an unresolved cart for this user \n %s',
+        error,
+      );
+    }
+  }
+
+  async findCartItemInCart(config: ICartConfig): Promise<CartItem> {
+    try {
+      const cart = await this.findCartByOwnerId(config);
+      const product_id = config.product_id;
+      const cart_id = cart.id;
+      const where: FindManyOptions<CartItem>['where'] = {};
+      where.product = product_id;
+      where.cart = cart_id;
+      where.is_in_cart = true;
+      where?.is_in_stock;
+      const cart_item = await this.cartItemRepository.findOne({ where });
+      return cart_item;
+    } catch (error) {
+      winstonLogger.error(
+        'Error while trying to find that cart item in this cart \n %s',
         error,
       );
     }

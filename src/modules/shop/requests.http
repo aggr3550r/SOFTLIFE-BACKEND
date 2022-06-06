@@ -14,7 +14,7 @@ content-type: application/json
 
 
 ### Preview A Product
-GET http://localhost:8086/product/preview-product/1d1daa63-8eb4-440e-a783-ad008279ddd3
+GET http://localhost:8086/product/preview-product/33b5c1fb-6316-4972-a7bf-87567a6daa85
 
 
 ### Get All Products
@@ -43,5 +43,5 @@ DELETE http://localhost:8086/product/remove-product?product_id=1d1daa63-8eb4-440
 ### CART ROUTES ###
 
 ### Create A New Empty Cart
-POST http://localhost:8086/cart/add-to-cart/7620a769-ad35-4727-ac01-908c964a3959
+POST http://localhost:8086/cart/add-to-cart/33b5c1fb-6316-4972-a7bf-87567a6daa85
 content-type: application/json
