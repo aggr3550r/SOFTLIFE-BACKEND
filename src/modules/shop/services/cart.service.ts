@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ICartAggregate } from 'src/interfaces/ICartAggregate';
 import { ICartConfig } from 'src/interfaces/ICartConfig';
 import { UserRepository } from 'src/modules/users/repository/user.repository';
 import { winstonLogger } from 'src/utils/winston';
@@ -62,7 +63,7 @@ export class CartService {
         where,
       });
       if (cart_item) {
-        cart_item.quantity_in_cart += 1;
+        cart_item.quantity_in_cart++;
         this.cartItemRepository.save(cart_item);
       } else {
         cart_item = await this.cartItemService.createCartItem(product, cart);
@@ -78,11 +79,12 @@ export class CartService {
     try {
       /* Removes item from cart_item repository
        */
+      const cart = await this.findCartByOwnerId(config);
       const cart_item = await this.findCartItemInCart(config);
-
       cart_item.is_in_cart = false;
+      cart_item.quantity_in_cart = 0;
       await this.cartItemRepository.save(cart_item);
-      return await this.cartRepository.save(cart_item.cart);
+      return await this.cartRepository.save(cart);
     } catch (error) {
       winstonLogger.error('removeItemFromCart() error \n %s', error);
     }
@@ -95,11 +97,12 @@ export class CartService {
     try {
       /* Updates item_quantity in cart_item repository
        */
+      const cart = await this.findCartByOwnerId(config);
       const cart_item = await this.findCartItemInCart(config);
 
       Object.assign(cart_item, { quantity_in_cart: new_quantity });
       await this.cartItemRepository.save(cart_item);
-      return await this.cartRepository.save(cart_item.cart);
+      return await this.cartRepository.save(cart);
     } catch (error) {
       winstonLogger.error('updateCartItemQuantity() error \n %s', error);
     }

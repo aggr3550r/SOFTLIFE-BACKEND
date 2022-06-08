@@ -1,5 +1,6 @@
 import { Expose } from 'class-transformer';
 import {
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -40,4 +41,8 @@ export class GetProductDTO {
 
   @Expose()
   quantity_in_stock: number;
+
+  @Expose()
+  @IsBoolean()
+  is_in_stock: boolean;
 }

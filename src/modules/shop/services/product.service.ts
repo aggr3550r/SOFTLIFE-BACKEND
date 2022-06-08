@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDTO } from 'src/dtos/page.dto';
 import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
 import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
+import { SoftlifeResponseStatus } from 'src/enums/softife.response.enum';
+import { ResponseModel } from 'src/models/response.model';
 import { User } from 'src/modules/users/entities/user.entity';
 import { UserRepository } from 'src/modules/users/repository/user.repository';
 import { winstonLogger } from 'src/utils/winston';
@@ -83,9 +85,17 @@ export class ProductService {
     }
   }
 
-  async deleteProduct(product_id: string): Promise<Product> {
+  async deleteProduct(product_id: string): Promise<Product | any> {
     try {
       const product = await this.productRepository.findOne(product_id);
+      console.log(product);
+      if (!product) {
+        return new ResponseModel(
+          SoftlifeResponseStatus.NOT_FOUND,
+          'That product was not found',
+          null,
+        );
+      }
       return this.productRepository.remove(product);
     } catch (error) {
       winstonLogger.error('deleteProduct() error \n %s', error);

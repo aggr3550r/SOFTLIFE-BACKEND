@@ -19,6 +19,7 @@ export class CartItemService {
     try {
       const cart_item = this.cartItemRepository.create(product);
       (cart_item.cart = cart),
+        (cart_item.product = product),
         (cart_item.quantity_in_cart = 1),
         (cart_item.is_in_cart = true);
       console.log(cart_item);

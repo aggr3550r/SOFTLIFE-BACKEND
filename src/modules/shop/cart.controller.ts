@@ -11,17 +11,17 @@ import {
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { ICartAggregate } from 'src/interfaces/ICartAggregate';
 import { ICartConfig } from 'src/interfaces/ICartConfig';
 import { User } from '../users/entities/user.entity';
 import { UpdateCartItemDTO } from './dtos/cart-item/update-cart-item.dto';
 import { CartDTO } from './dtos/cart/cart-dto';
-import { CreateCartDTO } from './dtos/cart/create-cart.dto';
 import { CartItem } from './entities/cart-item.entity';
 import { Cart } from './entities/cart.entity';
 import { CartService } from './services/cart.service';
 
 @Controller('cart')
-@Serialize(CartDTO)
+// @Serialize(CartDTO)
 @UseGuards(AuthGuard)
 export class CartController {
   constructor(private cartService: CartService) {}
@@ -31,19 +31,17 @@ export class CartController {
     @Param('product_id') product_id: string,
   ): Promise<Cart> {
     let config: ICartConfig = {};
-    console.log(user);
     config.user_id = user.id;
     config.product_id = product_id;
-    console.log(config);
     return await this.cartService.addItemToCart(config);
   }
 
   @Patch('remove-from-cart')
   async removeItemFromCart(
     @CurrentUser() user: User,
-    @Query('product') product_id: string,
+    @Query('product_id') product_id: string,
   ): Promise<Cart> {
-    let config: ICartConfig;
+    let config: ICartConfig = {};
     config.user_id = user.id;
     config.product_id = product_id;
     return await this.cartService.removeItemFromCart(config);
@@ -55,7 +53,7 @@ export class CartController {
     @Query('update-item') update_cart_item_dto: UpdateCartItemDTO,
   ): Promise<Cart> {
     let new_quantity = update_cart_item_dto.quantity;
-    let config: ICartConfig;
+    let config: ICartConfig = {};
     config.user_id = user.id;
     config.product_id = update_cart_item_dto.product;
     return await this.cartService.updateCartItemQuantity(config, new_quantity);
@@ -65,28 +63,28 @@ export class CartController {
   async fetchAllCartItemsInCart(
     @CurrentUser() user: User,
   ): Promise<CartItem[]> {
-    let config: ICartConfig;
+    let config: ICartConfig = {};
     config.user_id = user.id;
     return await this.cartService.fetchAllCartItemsInCart(config);
   }
 
   @Patch('empty-cart')
   async emptyCart(@CurrentUser() user: User): Promise<Cart> {
-    let config: ICartConfig;
+    let config: ICartConfig = {};
     config.user_id = user.id;
     return await this.cartService.emptyCart(config);
   }
 
   @Patch('drop-cart')
   async dropCart(@CurrentUser() user: User): Promise<void> {
-    let config: ICartConfig;
+    let config: ICartConfig = {};
     config.user_id = user.id;
     return await this.cartService.dropCart(config);
   }
 
   @Get('calculate-cost')
   async calculateCost(@CurrentUser() user: User): Promise<number> {
-    let config: ICartConfig;
+    let config: ICartConfig = {};
     config.user_id = user.id;
     return await this.cartService.calculateCostOfCart(config);
   }

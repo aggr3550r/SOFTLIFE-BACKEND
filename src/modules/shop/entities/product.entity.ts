@@ -23,7 +23,7 @@ export class Product extends BaseModel {
   @Column({ default: 0 })
   quantity_in_stock: number;
 
-  @Column({ default: false })
+  @Column({ default: true })
   is_in_stock: boolean;
 
   @OneToMany(() => CartItem, (cart_items) => cart_items.product)

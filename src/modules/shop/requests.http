@@ -14,7 +14,7 @@ content-type: application/json
 
 
 ### Preview A Product
-GET http://localhost:8086/product/preview-product/33b5c1fb-6316-4972-a7bf-87567a6daa85
+GET http://localhost:8086/product/preview-product/c1863e0b-cb49-4e5d-9cdb-c6d72e1adf2e
 
 
 ### Get All Products
@@ -22,18 +22,16 @@ GET http://localhost:8086/product/products?page=1&take=4
 
 
 ### Update A Product
-PATCH http://localhost:8086/product/update-product/?product_id=b22ad8ab-a7d8-4b41-973a-79d2bbcf0ecf
+PATCH http://localhost:8086/product/update-product/?product_id=d575b5a5-6440-48ed-8db2-8ba4fb7c254b
 content-type: application/json
 
 {
-    "name": "Backpack",
-    "description": "Black Leather Backpack",
-    "discount": 10.00
+    "is_in_stock": true
 }
 
 
 ### Delete A Product
-DELETE http://localhost:8086/product/remove-product?product_id=1d1daa63-8eb4-440e-a783-ad008279ddd3
+DELETE http://localhost:8086/product/remove-product?product_id=90d084c2-70e1-43d3-821c-c85b54389ac2
 
 
 
@@ -42,6 +40,9 @@ DELETE http://localhost:8086/product/remove-product?product_id=1d1daa63-8eb4-440
 
 ### CART ROUTES ###
 
-### Create A New Empty Cart
-POST http://localhost:8086/cart/add-to-cart/33b5c1fb-6316-4972-a7bf-87567a6daa85
+### Adds A Product To A Cart As A Cart_Item
+POST http://localhost:8086/cart/add-to-cart/3fda9b6c-9054-490f-8df5-be3a8c958bca
 content-type: application/json
+
+### Removes An Item from A Cart
+PATCH http://localhost:8086/cart/remove-from-cart?product_id=3fda9b6c-9054-490f-8df5-be3a8c958bca

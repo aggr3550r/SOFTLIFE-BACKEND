@@ -22,7 +22,7 @@ import { Product } from './entities/product.entity';
 import { ProductService } from './services/product.service';
 
 @Controller('product')
-@Serialize(GetProductDTO)
+// @Serialize(GetProductDTO)
 export class ProductController {
   constructor(private productService: ProductService) {}
 
