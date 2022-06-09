@@ -36,13 +36,41 @@ DELETE http://localhost:8086/product/remove-product?product_id=90d084c2-70e1-43d
 
 
 
+### --------------------------------------------------------
+
 
 
 ### CART ROUTES ###
 
 ### Adds A Product To A Cart As A Cart_Item
-POST http://localhost:8086/cart/add-to-cart/3fda9b6c-9054-490f-8df5-be3a8c958bca
+POST http://localhost:8086/cart/add-to-cart/3d654c5d-70f4-411a-b1e9-da2c3f03a89e
 content-type: application/json
 
 ### Removes An Item from A Cart
 PATCH http://localhost:8086/cart/remove-from-cart?product_id=3fda9b6c-9054-490f-8df5-be3a8c958bca
+
+
+### Updates Quantity of An Item In A Cart
+PATCH http://localhost:8086/cart/update-quantity
+content-type:application/json
+
+{
+    "product": "3d654c5d-70f4-411a-b1e9-da2c3f03a89e",
+    "quantity": 4
+}
+
+
+### Fetches All Items In A Cart
+GET http://localhost:8086/cart/fetch-cart-content
+
+
+### Empties A Cart
+PATCH http://localhost:8086/cart/empty-cart
+
+
+### Drops A Cart
+PATCH http://localhost:8086/cart/drop-cart
+
+
+### Calculates The Cost of All Items In A Cart 
+GET http://localhost:8086/cart/calculate-cost

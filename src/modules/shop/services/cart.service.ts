@@ -19,9 +19,9 @@ export class CartService {
     @InjectRepository(CartRepository) private cartRepository: CartRepository,
     @InjectRepository(ProductRepository)
     private productRepository: ProductRepository,
-    @InjectRepository(CartItemRepository)
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
+    @InjectRepository(CartItemRepository)
     private cartItemRepository: CartItemRepository,
     private cartItemService: CartItemService,
   ) {}
@@ -58,10 +58,11 @@ export class CartService {
       where.product = product_id;
       where.cart = cart_id;
       where.is_in_cart = true;
-      where.is_in_stock = true;
+      // where.is_in_stock = true;
       let cart_item = await this.cartItemRepository.findOne({
         where,
       });
+
       if (cart_item) {
         cart_item.quantity_in_cart++;
         this.cartItemRepository.save(cart_item);
@@ -145,6 +146,7 @@ export class CartService {
 
   async dropCart(config: ICartConfig): Promise<void> {
     const cart = await this.findCartByOwnerId(config);
+    this.emptyCart(config);
     cart.is_in_use = false;
     await this.cartRepository.save(cart);
     return null;
@@ -178,9 +180,6 @@ export class CartService {
     try {
       const where: FindManyOptions<Cart>['where'] = {};
       const owner_id = config.user_id;
-      if (!owner_id) {
-        return null;
-      }
       where.owner = owner_id;
       where.is_resolved = false;
       where.is_in_use = true;
@@ -203,7 +202,7 @@ export class CartService {
       where.product = product_id;
       where.cart = cart_id;
       where.is_in_cart = true;
-      where?.is_in_stock;
+      // where?.is_in_stock;
       const cart_item = await this.cartItemRepository.findOne({ where });
       return cart_item;
     } catch (error) {
