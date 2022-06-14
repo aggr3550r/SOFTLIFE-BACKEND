@@ -170,11 +170,19 @@ export class CartService {
     }
   }
 
+  /** This method will serve to converge all the functionality necessary to pay for a cart, notify the purchasing customer and have it shipped.
+   **
+  For the sake of internal cohesion, it will remain in this service. However, its core implementation will be appropriately decoupled in adherence to the single responsibility principle 
+   **/
+  async checkoutCart() {}
+
   /**
     This is the most crucial method in this service.
      It is leveraged by just about every other method in
      here to find the cart that is currently in procession
      for the user that is currently in session.
+     
+     I couldn't possibly overemphasize how much easier this makes my life.
    **/
   async findCartByOwnerId(config: ICartConfig): Promise<Cart> {
     try {

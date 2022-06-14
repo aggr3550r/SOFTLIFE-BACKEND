@@ -88,7 +88,6 @@ export class ProductService {
   async deleteProduct(product_id: string): Promise<Product | any> {
     try {
       const product = await this.productRepository.findOne(product_id);
-      console.log(product);
       if (!product) {
         return new ResponseModel(
           SoftlifeResponseStatus.NOT_FOUND,

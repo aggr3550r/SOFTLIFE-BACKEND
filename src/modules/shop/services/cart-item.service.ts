@@ -22,7 +22,6 @@ export class CartItemService {
         (cart_item.product = product),
         (cart_item.quantity_in_cart = 1),
         (cart_item.is_in_cart = true);
-      console.log(cart_item);
       return this.cartItemRepository.save(cart_item);
     } catch (error) {
       winstonLogger.error('createCartItem() error \n %s', error);
