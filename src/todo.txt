@@ -1,0 +1,9 @@
+1. Refactor Cart routes and services to return a cart aggregate object containing both the cart and cart item where needed
+
+2. Refactor ICartConfig to take the User entity and not the user_id
+
+3. Add SecurityUtil
+
+4. Add ResponseUtil
+
+5. Use ResponseModel to solidify knowledge of typescript generics. Implement a consistent response format, with priority on outward-facing endpoints and methods
