@@ -4,13 +4,13 @@ import { CartItem } from '../../entities/cart-item.entity';
 export class CreateCartDTO {
   @IsOptional()
   @IsBoolean()
-  is_in_use: boolean;
+  is_in_use?: boolean;
 
   @IsOptional()
   @IsBoolean()
-  is_resolved: boolean;
+  is_resolved?: boolean;
 
   @IsOptional()
   @IsArray()
-  cart_items: CartItem[];
+  cart_items?: CartItem[];
 }

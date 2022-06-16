@@ -5,6 +5,7 @@ import { ICartConfig } from 'src/interfaces/ICartConfig';
 import { UserRepository } from 'src/modules/users/repository/user.repository';
 import { winstonLogger } from 'src/utils/winston';
 import { FindManyOptions } from 'typeorm';
+import { CreateCartDTO } from '../dtos/cart/create-cart.dto';
 import { ProcessedCartDTO } from '../dtos/cart/processed-cart.dto';
 import { CartItem } from '../entities/cart-item.entity';
 import { Cart } from '../entities/cart.entity';
@@ -36,7 +37,8 @@ export class CartService {
       if (existing_cart) {
         return await this.cartRepository.findOne(existing_cart);
       } else {
-        const cart = this.cartRepository.create(config.create_cart_dto);
+        const create_cart_dto: CreateCartDTO = {};
+        const cart = this.cartRepository.create(create_cart_dto);
         cart.owner = user;
         return await this.cartRepository.save(cart);
       }
