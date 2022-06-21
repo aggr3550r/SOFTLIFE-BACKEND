@@ -15,6 +15,7 @@ import { MailController } from './mail.controller';
 import { SendgridService } from './sendgrid.service';
 import { ContactModule } from './modules/contact/contact.module';
 import { HealthController } from './health/health.controller';
+import { PaymentsModule } from './modules/payments/payments.module';
 const cookieSession = require('cookie-session');
 
 @Module({
@@ -26,6 +27,7 @@ const cookieSession = require('cookie-session');
     UsersModule,
     BlogPostModule,
     ShopModule,
+    PaymentsModule,
     HttpModule,
     TypeOrmModule.forRoot(),
     ScheduleModule.forRoot(),

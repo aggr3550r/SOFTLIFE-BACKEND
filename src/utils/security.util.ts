@@ -49,7 +49,7 @@ export default class SecurityUtil {
   public static createClientHash = async (message: string): Promise<string> => {
     const sha256Hasher = crypto.createHmac(
       'sha256',
-      process.env.KIPPA_CLIENT_ENC_KEY,
+      process.env.SOFTLIFE_CLIENT_ENC_KEY,
     );
     return sha256Hasher.update(message).digest('hex');
   };

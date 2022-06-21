@@ -127,14 +127,15 @@ export class CartService {
 
   async emptyCart(config: ICartConfig): Promise<Cart> {
     try {
-      /* Removes original cart_items from cart_item_repository
+      /* Removes all cart_items from cart
        */
       const cart = await this.findCartByOwnerId(config),
         cart_id = cart.id;
+      const where: FindManyOptions<CartItem>['where'] = {};
+      where.cart = cart_id;
+      where.is_in_cart = true;
       const cart_items = await this.cartItemRepository.find({
-        where: {
-          cart: cart_id,
-        },
+        where,
       });
       cart_items.forEach((cart_item) => {
         cart_item.is_in_cart = false;
