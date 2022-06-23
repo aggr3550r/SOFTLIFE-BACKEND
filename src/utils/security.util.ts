@@ -18,12 +18,12 @@ export default class SecurityUtil {
     aesIv: string,
     data: any,
   ): string => {
-    const encryptionEncoding = 'base64';
-    const bufferEncryption = 'utf-8';
+    const encryption_encoding = 'base64';
+    const buffer_encryption = 'utf-8';
     const iv = Buffer.from(aesIv);
     const cipher = crypto.createCipheriv(getAlgorithm(aesKey), aesKey, iv);
-    let encrypted = cipher.update(data, bufferEncryption, encryptionEncoding);
-    encrypted += cipher.final(encryptionEncoding);
+    let encrypted = cipher.update(data, buffer_encryption, encryption_encoding);
+    encrypted += cipher.final(encryption_encoding);
     return encrypted;
   };
 
