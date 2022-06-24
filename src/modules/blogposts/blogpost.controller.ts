@@ -21,6 +21,7 @@ import { UpdatePostDTO } from './dtos/update-blogpost.dto';
 import { BlogPostService } from './blogpost.service';
 import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
 
+
 @Controller('blogposts')
 export class BlogPostController {
   constructor(private blogPostService: BlogPostService) {}
