@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDTO } from 'src/dtos/page.dto';
 import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
 import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
-import { SoftlifeResponseStatus } from 'src/enums/softife.response.enum';
+import { SoftlifeResponseStatus } from 'src/enums/softlife.response.enum';
 import { ResponseModel } from 'src/models/response.model';
 import { User } from 'src/modules/users/entities/user.entity';
 import { UserRepository } from 'src/modules/users/repository/user.repository';

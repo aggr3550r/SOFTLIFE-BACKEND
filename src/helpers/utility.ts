@@ -1,7 +1,7 @@
 import {
   SoftlifeResponseStatus,
   SoftlifeResponseStatusMessage,
-} from '../enums/softife.response.enum';
+} from '../enums/softlife.response.enum';
 
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');

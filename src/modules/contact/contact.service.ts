@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
-import { NotFoundException } from '@nestjs/common';
 import { UpdateMessageDTO } from './dtos/update-message.dto';
 import { MessageRepository } from './repository/message.repository';
 import { winstonLogger } from 'src/utils/winston';
-import winston from 'winston/lib/winston/config';
 import { ResponseModel } from 'src/models/response.model';
-import {
-  SoftlifeResponseStatus,
-  SoftlifeResponseStatusMessage,
-} from 'src/enums/softife.response.enum';
+import { SoftlifeResponseStatus } from 'src/enums/softlife.response.enum';
 import { CreateMessageDTO } from './dtos/create-message.dto';
+import { FindManyOptions } from 'typeorm';
+import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
+import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
+import { PageDTO } from 'src/dtos/page.dto';
 
 @Injectable()
 export class ContactService {
@@ -29,25 +28,40 @@ export class ContactService {
     }
   }
 
-  async findAllMessages(): Promise<Message[]> {
-    const data = await this.messageRepository.find();
-    return data;
-  }
-
-  async findAllRepliedMessages(): Promise<any[]> {
+  async findAllMessages(
+    page_options_dto: PageOptionsDTO,
+  ): Promise<PageDTO<Message>> {
     try {
-      const messages = await this.findAllMessages();
-      const repliedMessages = [];
-      messages.forEach((message) => {
-        if (message.replied) repliedMessages.push(message);
+      const [items, count] = await this.messageRepository.findAndCount({
+        order: {
+          created_at: 'DESC',
+        },
+        skip: page_options_dto.skip,
+        take: page_options_dto.take,
       });
-      return repliedMessages;
+
+      const page_meta_dto = new PageMetaDTO({
+        total_items: count,
+        page_options_dto,
+      });
+      return new PageDTO(items, page_meta_dto);
     } catch (error) {
       winstonLogger.error('findAllMessages() error \n %s', error);
     }
   }
 
-  async update(id: number, body: UpdateMessageDTO) {
+  async findAllRepliedMessages(): Promise<Message[]> {
+    try {
+      const where: FindManyOptions<Message>['where'] = {};
+      where.replied = true;
+      const replied_messages = await this.messageRepository.find({ where });
+      return replied_messages;
+    } catch (error) {
+      winstonLogger.error('findAllRepliedMessages() error \n %s', error);
+    }
+  }
+
+  async update(id: string, body: UpdateMessageDTO) {
     try {
       const message = await this.messageRepository.findOne(id);
       if (!message) {

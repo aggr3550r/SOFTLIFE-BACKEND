@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { PageDTO } from 'src/dtos/page.dto';
+import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
 import { AdminGuard } from 'src/guards/admin.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
@@ -20,10 +30,12 @@ export class ContactController {
     return message;
   }
 
-  @Get('/all-messages')
+  @Get('all-messages')
   @UseGuards(AdminGuard)
-  getAllMessages(): Promise<Message[]> {
-    return this.contactService.findAllMessages();
+  getAllMessages(
+    @Query() page_options_dto: PageOptionsDTO,
+  ): Promise<PageDTO<Message>> {
+    return this.contactService.findAllMessages(page_options_dto);
   }
 
   @Post('reply-message/:id')
@@ -32,7 +44,7 @@ export class ContactController {
     return this.contactService.update(parseInt(id), body);
   }
 
-  @Get('/replied-messages')
+  @Get('replied-messages')
   @UseGuards(AdminGuard)
   getUnrepliedMessages(): Promise<Message[]> {
     return this.contactService.findAllRepliedMessages();

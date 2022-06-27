@@ -14,9 +14,9 @@ export class ComingSoonService {
     private anticipatorRepository: AnticipatorRepository,
   ) {}
 
-  create(email: string) {
+  async create(email: string) {
     try {
-      if (this.anticipatorRepository.find({ email })) {
+      if (await this.anticipatorRepository.find({ email })) {
         throw new NotAcceptableException(
           'You are already on the waiting list!',
         );
@@ -41,7 +41,6 @@ export class ComingSoonService {
 
   async remove(id: number) {
     try {
-      if (!id) return null;
       const anticipator = await this.anticipatorRepository.findOne(id);
       if (!anticipator) {
         throw new NotFoundException('User does not exist');

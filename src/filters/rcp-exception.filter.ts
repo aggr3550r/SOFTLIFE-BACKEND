@@ -1,10 +1,13 @@
 import { ArgumentsHost, Catch, HttpStatus, Logger } from '@nestjs/common';
 import { BaseExceptionFilter, HttpAdapterHost } from '@nestjs/core';
-import { SoftlifeResponseStatus } from 'src/enums/softife.response.enum';
+import { SoftlifeResponseStatus } from 'src/enums/softlife.response.enum';
 
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
-  constructor(private readonly adapterHost: HttpAdapterHost, private logger: Logger) {
+  constructor(
+    private readonly adapterHost: HttpAdapterHost,
+    private logger: Logger,
+  ) {
     super(adapterHost.httpAdapter);
   }
 
@@ -19,7 +22,8 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     //let message = "Error occured while trying to process this request!";
 
-    let message = exception instanceof Error ? exception.message : exception.message?.error;
+    let message =
+      exception instanceof Error ? exception.message : exception.message?.error;
 
     if (exception.status === HttpStatus.NOT_FOUND) {
       status = HttpStatus.NOT_FOUND;
@@ -62,7 +66,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     response.status(status).json({
       statusCode: SoftlifeResponseStatus.FAILED,
       message: message || 'An error occured while processing this request!',
-      data: null
+      data: null,
     });
   }
 }

@@ -1,8 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PageDTO } from 'src/dtos/page.dto';
 import { PageMetaDTO } from 'src/dtos/pagemeta.dto';
 import { PageOptionsDTO } from 'src/dtos/pageoption.dto';
+import { SoftlifeResponseStatus } from 'src/enums/softlife.response.enum';
+import { ResponseModel } from 'src/models/response.model';
 import { User } from 'src/modules/users/entities/user.entity';
 import { winstonLogger } from 'src/utils/winston';
 import { CreateBlogPostDTO } from './dtos/create-blogpost.dto';
@@ -53,24 +55,30 @@ export class BlogPostService {
 
   async update(id: string, body: UpdatePostDTO) {
     const blogposts = await this.blogpostRepository.findOne(id);
-    if (!blogposts) {
-      throw new NotFoundException('Post not found');
-    }
-
     Object.assign(blogposts, body);
     return this.blogpostRepository.save(blogposts);
   }
 
   async remove(id: number) {
     const blogpost = await this.blogpostRepository.findOne(id);
-    if (!blogpost) throw new NotFoundException('User does not exist');
+    if (!blogpost) {
+      return new ResponseModel(
+        SoftlifeResponseStatus.NOT_FOUND,
+        'Blogpost not found!',
+        null,
+      );
+    }
     return this.blogpostRepository.remove(blogpost);
   }
 
   async changeApprovalStatus(id: string, status: boolean) {
     const blogpost = await this.blogpostRepository.findOne(id);
     if (!blogpost) {
-      throw new NotFoundException('Post does not exist!');
+      return new ResponseModel(
+        SoftlifeResponseStatus.NOT_FOUND,
+        'Blogpost not found!',
+        null,
+      );
     }
     blogpost.approved = status;
     return this.blogpostRepository.save(blogpost);
