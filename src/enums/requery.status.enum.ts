@@ -1,0 +1,10 @@
+export enum RequeryStatus {
+  SUCCESS = '00',
+  PENDING = '03',
+  TRANSACTION_NOT_FOUND_FROM_PROVIDER = '04',
+  TRANSACTION_NOT_FOUND = '05',
+  REVERSED = '91',
+  UNKNOWN = '93',
+  FAILED = '99',
+  ERROR = '95',
+}

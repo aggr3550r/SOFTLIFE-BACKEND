@@ -13,7 +13,7 @@ export default abstract class AbstractPaymentProvider {
 
   generateTransactionReference() {
     let ref = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    return `${this.getProviderPrefix()}_${ref}_${randomInt(8)}`;
+    return `${this.getRefPrefix()}_${ref}_${randomInt(8)}`;
   }
 
   currencyList(): string[] {
@@ -24,5 +24,5 @@ export default abstract class AbstractPaymentProvider {
     return this.currencyList().includes(currencyAbbr);
   }
 
-  protected abstract getProviderPrefix(): string;
+  protected abstract getRefPrefix(): string;
 }
