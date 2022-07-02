@@ -6,10 +6,14 @@ import { UsersService } from './users.service';
 import { CurrentUserMiddleware } from '../../middlewares/current-user.middleware';
 import { UserRepository } from './repository/user.repository';
 import { User } from './entities/user.entity';
+import { PaymentProviderModule } from '../paymentprovider/paymentprovider.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, UserRepository])],
-  exports: [TypeOrmModule.forFeature([UserRepository])],
+  imports: [
+    TypeOrmModule.forFeature([User, UserRepository]),
+    PaymentProviderModule,
+  ],
+  exports: [TypeOrmModule.forFeature([UserRepository]), UsersService],
   controllers: [UsersController],
   providers: [UsersService, AuthService],
 })

@@ -1,16 +1,4 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateBlogPostDTO } from './create-blogpost.dto';
 
-export class UpdatePostDTO {
-  @IsString()
-  @IsOptional()
-  @MaxLength(200)
-  title: string;
-
-  @IsString()
-  @IsOptional()
-  description: string;
-
-  @IsString()
-  @IsOptional()
-  content: string;
-}
+export class UpdatePostDTO extends PartialType(CreateBlogPostDTO) {}

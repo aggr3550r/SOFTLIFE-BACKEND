@@ -1,4 +1,5 @@
 import { randomInt } from 'crypto';
+import { User } from './modules/users/entities/user.entity';
 
 export default abstract class AbstractPaymentProvider {
   /**
@@ -20,9 +21,11 @@ export default abstract class AbstractPaymentProvider {
     return ['NGN'];
   }
 
-  isSupportedCurrency(currencyAbbr: string) {
-    return this.currencyList().includes(currencyAbbr);
+  isSupportedCurrency(currencyCode: string) {
+    return this.currencyList().includes(currencyCode);
   }
+
+  protected abstract getInitiator(email: string): Promise<User>;
 
   protected abstract getRefPrefix(): string;
 }

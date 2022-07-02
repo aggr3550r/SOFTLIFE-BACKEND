@@ -41,7 +41,7 @@ export class ContactController {
   @Post('reply-message/:id')
   @UseGuards(AdminGuard)
   replyMessage(@Param('id') id: string, @Body() body: UpdateMessageDTO) {
-    return this.contactService.update(parseInt(id), body);
+    return this.contactService.update(id, body);
   }
 
   @Get('replied-messages')
