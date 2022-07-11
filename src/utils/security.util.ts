@@ -46,12 +46,12 @@ export default class SecurityUtil {
     return crypto.createHash('sha256').update(data).digest('hex');
   };
 
-  public static createClientHash = async (message: string): Promise<string> => {
-    const sha256Hasher = crypto.createHmac(
-      'sha256',
-      process.env.SOFTLIFE_CLIENT_ENC_KEY,
+  public static createPaystackHash = async (data: string): Promise<string> => {
+    const sha_512_hasher = crypto.createHmac(
+      'sha512',
+      process.env.PAYSTACK_SECRET_KEY,
     );
-    return sha256Hasher.update(message).digest('hex');
+    return sha_512_hasher.update(data).digest('hex');
   };
 }
 
