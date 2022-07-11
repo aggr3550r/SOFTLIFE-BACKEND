@@ -8,11 +8,8 @@ import { NestFactory } from '@nestjs/core';
 import * as morgan from 'morgan';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './filters/rcp-exception.filter';
-import {
-  winstonLogger,
-  WinstonLoggerService,
-  winstonStream,
-} from './utils/winston'; // should come first before the next line
+import { TransformInterceptor } from './interceptors/transform.interceptor';
+import { WinstonLoggerService, winstonStream } from './utils/winston'; // should come first before the next line
 
 async function bootstrap() {
   const port = process.env.APP_PORT ? Number(process.env.APP_PORT) : 8086;
@@ -23,6 +20,7 @@ async function bootstrap() {
 
   const httpRef = app.getHttpAdapter().getHttpServer();
   app.useGlobalFilters(new AllExceptionsFilter(httpRef, new Logger()));
+  app.useGlobalInterceptors(new TransformInterceptor());
   app.use(morgan('tiny', { stream: winstonStream }));
 
   app.useGlobalPipes(
