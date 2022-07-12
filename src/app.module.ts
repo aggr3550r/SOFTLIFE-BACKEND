@@ -12,7 +12,7 @@ import { ShopModule } from './modules/shop/shop.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ComingSoonModule } from './modules/coming-soon/coming-soon.module';
 import { MailController } from './mail.controller';
-import { SendgridService } from './sendgrid.service';
+import { SendgridService } from './services/sendgrid.service';
 import { ContactModule } from './modules/contact/contact.module';
 import { HealthController } from './health/health.controller';
 import { PaymentProviderModule } from './modules/paymentprovider/paymentprovider.module';

@@ -34,7 +34,7 @@ export class PaystackProvider extends AbstractPaymentProvider {
 
   async initializePaymentLinkTransaction(
     generate_payment_link_dto: GeneratePaymentLinkDto,
-  ) {
+  ): Promise<ResponseModel<CreateTransactionDTO>> {
     try {
       if (!this.isSupportedCurrency(generate_payment_link_dto.currency)) {
         return new ResponseModel(

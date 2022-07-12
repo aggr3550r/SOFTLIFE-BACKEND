@@ -10,12 +10,9 @@ import {
 } from '@nestjs/common';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { ICartAggregate } from 'src/interfaces/ICartAggregate';
 import { ICartConfig } from 'src/interfaces/ICartConfig';
 import { User } from '../users/entities/user.entity';
 import { UpdateCartItemDTO } from './dtos/cart-item/update-cart-item.dto';
-import { CartDTO } from './dtos/cart/cart-dto';
 import { CartItem } from './entities/cart-item.entity';
 import { Cart } from './entities/cart.entity';
 import { CartService } from './services/cart.service';
