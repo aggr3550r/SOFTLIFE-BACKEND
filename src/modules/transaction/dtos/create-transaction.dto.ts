@@ -11,9 +11,9 @@ import { PaymentProviders } from 'src/enums/payment.provider.enum';
 import { PaymentStatus } from 'src/enums/payment.status.enum';
 
 export class CreateTransactionDTO {
-  @IsNotEmpty()
+  @IsOptional()
   @IsUUID()
-  initiator: string;
+  initiator?: string;
 
   @IsNotEmpty()
   reference: string;
