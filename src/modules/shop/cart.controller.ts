@@ -18,10 +18,10 @@ import { Cart } from './entities/cart.entity';
 import { CartService } from './services/cart.service';
 
 @Controller('cart')
-// @Serialize(CartDTO)
 @UseGuards(AuthGuard)
 export class CartController {
   constructor(private cartService: CartService) {}
+
   @Post('add-to-cart/:product_id')
   async addItemToCart(
     @CurrentUser() user: User,

@@ -49,8 +49,12 @@ export class TransactionService {
         transaction.client_reference == reference;
       });
 
-      if (obj) tmps.push({ reference, status: obj.status });
-      else tmps.push({ reference, status: PaymentStatus.NOT_FOUND });
+      if (obj) {
+        const payment_status = obj.status ?? PaymentStatus.UNKNOWN;
+        tmps.push({ reference, status: payment_status });
+      } else {
+        tmps.push({ reference, status: PaymentStatus.NOT_FOUND });
+      }
     });
 
     return tmps;

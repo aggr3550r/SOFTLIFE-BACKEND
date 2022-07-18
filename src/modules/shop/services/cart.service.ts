@@ -1,12 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ICartAggregate } from 'src/interfaces/ICartAggregate';
 import { ICartConfig } from 'src/interfaces/ICartConfig';
 import { UserRepository } from 'src/modules/users/repository/user.repository';
 import { winstonLogger } from 'src/utils/winston';
 import { FindManyOptions } from 'typeorm';
 import { CreateCartDTO } from '../dtos/cart/create-cart.dto';
-import { ProcessedCartDTO } from '../dtos/cart/processed-cart.dto';
 import { CartItem } from '../entities/cart-item.entity';
 import { Cart } from '../entities/cart.entity';
 import { CartItemRepository } from '../repository/cart-item.repository';
@@ -32,10 +30,10 @@ export class CartService {
   */
   async getACart(config: ICartConfig): Promise<Cart> {
     try {
-      const existing_cart = await this.findCartByOwnerId(config);
+      const cart_exists = await this.findCartByOwnerId(config);
       const user = await this.userRepository.findOne(config.user_id);
-      if (existing_cart) {
-        return await this.cartRepository.findOne(existing_cart);
+      if (cart_exists) {
+        return await this.cartRepository.findOne({ id: cart_exists.id });
       } else {
         const create_cart_dto: CreateCartDTO = {};
         const cart = this.cartRepository.create(create_cart_dto);
@@ -50,17 +48,15 @@ export class CartService {
   async addItemToCart(config: ICartConfig): Promise<Cart> {
     try {
       const product = await this.productRepository.findOne(config.product_id);
-      let cart = await this.findCartByOwnerId(config);
-      if (!cart) {
-        cart = await this.getACart(config);
-      }
+      let cart =
+        (await this.findCartByOwnerId(config)) ?? (await this.getACart(config));
+
       const product_id = config.product_id,
         cart_id = cart.id;
       const where: FindManyOptions<CartItem>['where'] = {};
       where.product = product_id;
       where.cart = cart_id;
       where.is_in_cart = true;
-      // where.is_in_stock = true;
       let cart_item = await this.cartItemRepository.findOne({
         where,
       });
@@ -78,10 +74,13 @@ export class CartService {
     }
   }
 
+  /**
+   * Removes item from cart_item repository
+   * @param
+   * @returns A cart
+   */
   async removeItemFromCart(config: ICartConfig): Promise<Cart> {
     try {
-      /* Removes item from cart_item repository
-       */
       const cart = await this.findCartByOwnerId(config);
       const cart_item = await this.findCartItemInCart(config);
       cart_item.is_in_cart = false;
@@ -93,13 +92,16 @@ export class CartService {
     }
   }
 
+  /**
+   * Updates item quantity in cart_item repository
+   * @param
+   * @returns A cart
+   */
   async updateCartItemQuantity(
     config: ICartConfig,
     new_quantity: number,
   ): Promise<Cart> {
     try {
-      /* Updates item_quantity in cart_item repository
-       */
       const cart = await this.findCartByOwnerId(config);
       const cart_item = await this.findCartItemInCart(config);
 
@@ -149,7 +151,7 @@ export class CartService {
 
   async dropCart(config: ICartConfig): Promise<void> {
     const cart = await this.findCartByOwnerId(config);
-    this.emptyCart(config);
+    await this.emptyCart(config);
     cart.is_in_use = false;
     await this.cartRepository.save(cart);
     return null;
@@ -180,13 +182,14 @@ export class CartService {
   async checkoutCart() {}
 
   /**
-    This is the most crucial method in this service.
+   * This is the most crucial method in this service.
      It is leveraged by just about every other method in
      here to find the cart that is currently in procession
      for the user that is currently in session.
-     
      I couldn't possibly overemphasize how much easier this makes my life.
-   **/
+    * @params config which is of type ICartConfig
+    * @returns A cart that belongs to the user currently in session
+   */
   async findCartByOwnerId(config: ICartConfig): Promise<Cart> {
     try {
       const where: FindManyOptions<Cart>['where'] = {};
@@ -213,7 +216,6 @@ export class CartService {
       where.product = product_id;
       where.cart = cart_id;
       where.is_in_cart = true;
-      // where?.is_in_stock;
       const cart_item = await this.cartItemRepository.findOne({ where });
       return cart_item;
     } catch (error) {

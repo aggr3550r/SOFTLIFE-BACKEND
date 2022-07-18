@@ -7,3 +7,7 @@
 4. Add ResponseUtil
 
 5. Use ResponseModel to solidify knowledge of typescript generics. Implement a consistent response format, with priority on outward-facing endpoints and methods
+
+6. Host the server on the cloud and proceed to manually test the endpoints and functionalities implemented
+
+7. Write unit tests for the controllers

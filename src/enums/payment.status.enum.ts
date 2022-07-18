@@ -5,4 +5,5 @@ export enum PaymentStatus {
   PENDING = '03',
   NOT_FOUND = '04',
   REVERSED = '91',
+  UNKNOWN = '93',
 }

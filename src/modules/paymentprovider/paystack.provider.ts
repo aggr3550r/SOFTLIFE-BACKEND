@@ -15,9 +15,9 @@ import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class PaystackProvider extends AbstractPaymentProvider {
-  paystack_base_url = process.env.PAYSTACK_BASE_URL;
+  private readonly paystack_base_url = process.env.PAYSTACK_BASE_URL;
 
-  paystack_auth_header = {
+  protected readonly paystack_auth_header = {
     Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
   };
 
@@ -64,8 +64,7 @@ export class PaystackProvider extends AbstractPaymentProvider {
       );
 
       const transaction_data: CreateTransactionDTO = {
-        initiator: (await this.getInitiator(generate_payment_link_dto.email))
-          .id,
+        initiator: await this.getInitiator(generate_payment_link_dto.email),
         reference: customer_information.reference,
         client_reference: generate_payment_link_dto.client_reference,
         request: JSON.stringify(generate_payment_link_dto),
@@ -103,8 +102,14 @@ export class PaystackProvider extends AbstractPaymentProvider {
     return 'PYSTK';
   }
 
-  protected async getInitiator(email: string): Promise<User> {
-    return await this.userService.findByEmail(email);
+  /**
+   * Gets the initiator id which is the id of the signed in user
+   * @params user email
+   * @returns user id
+   */
+  protected async getInitiator(email: string): Promise<string> {
+    const user_id = (await this.userService.findByEmail(email)).id;
+    return user_id;
   }
   channelList(): Array<string> {
     return ['card', 'bank', 'ussd'];
