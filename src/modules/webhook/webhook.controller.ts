@@ -54,7 +54,7 @@ export class WebhookController {
           default:
             return new ResponseModel(
               SoftlifeResponseStatus.NOT_FOUND,
-              'This application does not yet handle this event type.',
+              'This application does not yet handle events of this kind.',
               null,
             );
         }

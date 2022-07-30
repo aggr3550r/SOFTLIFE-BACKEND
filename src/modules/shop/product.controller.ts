@@ -22,11 +22,10 @@ import { Product } from './entities/product.entity';
 import { ProductService } from './services/product.service';
 
 @Controller('product')
-// @Serialize(GetProductDTO)
 export class ProductController {
   constructor(private productService: ProductService) {}
 
-  @Post('/create-product')
+  @Post('create-product')
   @UseGuards(AuthGuard)
   async createProduct(
     @Body()
@@ -36,14 +35,14 @@ export class ProductController {
     return await this.productService.createProduct(body, user);
   }
 
-  @Get('/preview-product/:product_id')
+  @Get('preview-product/:product_id')
   async previewProduct(
     @Param('product_id') product_id: string,
   ): Promise<Product> {
     return await this.productService.getAProduct(product_id);
   }
 
-  @Get('/products')
+  @Get('products')
   async getProducts(
     @Query() page_options_dto: PageOptionsDTO,
   ): Promise<Product[]> {
@@ -53,7 +52,7 @@ export class ProductController {
     return paginated_products.data;
   }
 
-  @Patch('/update-product')
+  @Patch('update-product')
   @UseGuards(AdminGuard)
   async updateProduct(
     @Body() updates: UpdateProductDTO,
@@ -62,7 +61,7 @@ export class ProductController {
     return await this.productService.updateProduct(product_id, updates);
   }
 
-  @Delete('/remove-product')
+  @Delete('remove-product')
   @UseGuards(AdminGuard)
   async removeProduct(
     @Query('product_id') product_id: string,

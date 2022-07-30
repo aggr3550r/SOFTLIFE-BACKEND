@@ -25,7 +25,7 @@ export default abstract class AbstractPaymentProvider {
     return this.currencyList().includes(currencyCode);
   }
 
-  protected abstract getInitiator(email: string): Promise<User>;
+  protected abstract getInitiator(email: string): Promise<string>;
 
   protected abstract getRefPrefix(): string;
 }

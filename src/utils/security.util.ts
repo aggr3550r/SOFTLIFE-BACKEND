@@ -46,6 +46,12 @@ export default class SecurityUtil {
     return crypto.createHash('sha256').update(data).digest('hex');
   };
 
+  /**
+   * All requests from Paystack contain a cryptographic hash in their headers. This method creates an identical copy of that hash for comparison sake.
+   * This way, we can ensure that all requests hitting our webhook are from Paystack's end and not a malicious actor.
+   * @params The request body after it has been stringified
+   * @returns A cryptographic hash
+   */
   public static createPaystackHash = async (data: string): Promise<string> => {
     const sha_512_hasher = crypto.createHmac(
       'sha512',
