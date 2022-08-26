@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SoftlifeResponseStatus } from 'src/enums/softlife.response.enum';
 import { ICartConfig } from 'src/interfaces/ICartConfig';
+import { ResponseModel } from 'src/models/response.model';
 import { UserRepository } from 'src/modules/users/repository/user.repository';
 import { winstonLogger } from 'src/utils/winston';
-import { FindManyOptions } from 'typeorm';
+import { FindManyOptions, getConnection } from 'typeorm';
 import { CreateCartDTO } from '../dtos/cart/create-cart.dto';
 import { CartItem } from '../entities/cart-item.entity';
 import { Cart } from '../entities/cart.entity';
@@ -51,15 +53,7 @@ export class CartService {
       let cart =
         (await this.findCartByOwnerId(config)) ?? (await this.getACart(config));
 
-      const product_id = config.product_id,
-        cart_id = cart.id;
-      const where: FindManyOptions<CartItem>['where'] = {};
-      where.product = product_id;
-      where.cart = cart_id;
-      where.is_in_cart = true;
-      let cart_item = await this.cartItemRepository.findOne({
-        where,
-      });
+      let cart_item = await this.findCartItemInCart(config);
 
       if (cart_item) {
         cart_item.quantity_in_cart++;
@@ -85,8 +79,9 @@ export class CartService {
       const cart_item = await this.findCartItemInCart(config);
       cart_item.is_in_cart = false;
       cart_item.quantity_in_cart = 0;
-      await this.cartItemRepository.save(cart_item);
-      return await this.cartRepository.save(cart);
+      return await (
+        await this.saveCartAndCartItemInATransactionChain(cart, cart_item)
+      ).data;
     } catch (error) {
       winstonLogger.error('removeItemFromCart() error \n %s', error);
     }
@@ -106,8 +101,10 @@ export class CartService {
       const cart_item = await this.findCartItemInCart(config);
 
       Object.assign(cart_item, { quantity_in_cart: new_quantity });
-      await this.cartItemRepository.save(cart_item);
-      return await this.cartRepository.save(cart);
+
+      return await (
+        await this.saveCartAndCartItemInATransactionChain(cart, cart_item)
+      ).data;
     } catch (error) {
       winstonLogger.error('updateCartItemQuantity() error \n %s', error);
     }
@@ -222,6 +219,38 @@ export class CartService {
       winstonLogger.error(
         'Error while trying to find that cart item in this cart \n %s',
         error,
+      );
+    }
+  }
+
+  async saveCartAndCartItemInATransactionChain(
+    cart: Cart,
+    cart_item: CartItem,
+  ) {
+    try {
+      await getConnection().transaction(async (manager) => {
+        await manager.save(Cart, cart);
+
+        await manager.save(CartItem, cart_item);
+      });
+
+      const updatedCart = await this.cartRepository.findOne({ id: cart.id });
+
+      return new ResponseModel(
+        SoftlifeResponseStatus.SUCCESS,
+        'Successfully saved all entities in a transaction chain.',
+        updatedCart,
+      );
+    } catch (error) {
+      winstonLogger.error(
+        'saveCartAndCartItemInATransactionChain() \n %o',
+        error,
+      );
+
+      return new ResponseModel(
+        SoftlifeResponseStatus.FAILED,
+        'Unable to save all entities in a transaction chain, rolling back changes...',
+        null,
       );
     }
   }
